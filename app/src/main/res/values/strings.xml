@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">图片空间</string>
+    <string name="startimg">startimg</string>
+    <string name="button">进入图片空间</string>
+</resources>
