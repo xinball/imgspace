@@ -3,22 +3,22 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="top.xb.imgspace">
 
-    <uses-permission android:name="android.permission.WRITE_CONTACTS">true</uses-permission>
-    <uses-permission android:name="android.permission.READ_CALL_LOG" >true</uses-permission>
-    <uses-permission android:name="android.permission.ACCESS_LOCATION_EXTRA_COMMANDS">true</uses-permission>
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE">true</uses-permission>
-    <uses-permission android:name="android.permission.CHANGE_NETWORK_STATE">true</uses-permission>
-    <uses-permission android:name="android.permission.ACCESS_NOTIFICATION_POLICY">true</uses-permission>
-    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE">true</uses-permission>
-    <uses-permission android:name="android.permission.CHANGE_WIFI_STATE">true</uses-permission>
-    <uses-permission android:name="android.permission.INTERNET">true</uses-permission>
-    <uses-permission android:name="android.permission.READ_SYNC_SETTINGS">true</uses-permission>
-    <uses-permission android:name="android.permission.READ_SYNC_STATS">true</uses-permission>
-    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED">true</uses-permission>
-    <uses-permission android:name="android.permission.REQUEST_INSTALL_PACKAGES">true</uses-permission>
-    <uses-permission android:name="android.permission.SET_WALLPAPER">true</uses-permission>
-    <uses-permission android:name="android.permission.USE_FINGERPRINT">true</uses-permission>
-    <uses-permission android:name="android.permission.BROADCAST_STICKY">true</uses-permission>
+    <uses-permission android:name="android.permission.WRITE_CONTACTS" />
+    <uses-permission android:name="android.permission.READ_CALL_LOG" />
+    <uses-permission android:name="android.permission.ACCESS_LOCATION_EXTRA_COMMANDS"/>
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.CHANGE_NETWORK_STATE"/>
+    <uses-permission android:name="android.permission.ACCESS_NOTIFICATION_POLICY"/>
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+    <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.READ_SYNC_SETTINGS" />
+    <uses-permission android:name="android.permission.READ_SYNC_STATS" />
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+    <uses-permission android:name="android.permission.REQUEST_INSTALL_PACKAGES" />
+    <uses-permission android:name="android.permission.SET_WALLPAPER" />
+    <uses-permission android:name="android.permission.USE_FINGERPRINT" />
+    <uses-permission android:name="android.permission.BROADCAST_STICKY" />
 
     <application
         android:allowBackup="false"
