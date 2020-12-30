@@ -4,7 +4,11 @@ public class APIAddress
 	public static final String WEBSITE_PATH = "/imgsite"; //Website path, You can leave it blank in most cases.
 	public static final String API_KEY = "12450"; //Application key you set in ```config.php```
 	public static final String API_SECRET = "b40484df0ad979d8ba7708d24c301c38"; //Application secret you set in ```config.php```
-
+	//活动被打开？
+	public static boolean StartActivity=false;
+	public static boolean MainActivity=false;
+	public static boolean LoginActivity=false;
+	public static boolean ReguserActivity=false;
     //Real
     public static final String DOMAIN_NAME = "http://nzq.xinball.top:8080"+ WEBSITE_PATH; // Main domain name
     public static final String BASIC_API_URL = "http://nzq.xinball.top:8080" + WEBSITE_PATH; // Domain name of API

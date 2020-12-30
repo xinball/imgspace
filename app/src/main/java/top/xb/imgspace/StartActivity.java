@@ -8,10 +8,13 @@ import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
 
+import top.xb.imgspace.config.APIAddress;
+
 public class StartActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        APIAddress.StartActivity=true;
         super.onCreate(savedInstanceState);
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);//隐藏状态栏
         setContentView(R.layout.activity_start);
@@ -21,9 +24,12 @@ public class StartActivity extends AppCompatActivity {
             public void run(){
                 try{
                     sleep(5000);
-                    Intent it=new Intent(getApplicationContext(),MainActivity.class);//启动MainActivity
-                    startActivity(it);
-                    finish();//关闭活动
+                    if(!APIAddress.MainActivity){
+                        Intent it=new Intent(getApplicationContext(),MainActivity.class);//启动MainActivity
+                        startActivity(it);
+                        APIAddress.StartActivity=false;
+                        finish();//关闭活动
+                    }
                 }catch (Exception e){
                     e.printStackTrace();
                 }
@@ -36,9 +42,12 @@ public class StartActivity extends AppCompatActivity {
                     ibt.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View view) {
-                            Intent it=new Intent(getApplicationContext(),MainActivity.class);//启动MainActivity
-                            startActivity(it);
-                            finish();//关闭活动
+                            if(!APIAddress.MainActivity){
+                                Intent it=new Intent(getApplicationContext(),MainActivity.class);//启动MainActivity
+                                startActivity(it);
+                                APIAddress.StartActivity=false;
+                                finish();//关闭活动
+                            }
                         }
                     });
                 }catch (Exception e){

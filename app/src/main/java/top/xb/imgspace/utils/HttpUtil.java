@@ -14,6 +14,9 @@ import org.json.JSONObject;
 import org.json.JSONTokener;
 
 import java.io.BufferedReader;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
@@ -32,23 +35,25 @@ import java.net.URLEncoder;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class HttpUtil {
     private Integer connectTimeout = null;
     private Integer socketTimeout = null;
     private String proxyHost = null;
     private Integer proxyPort = null;
-    private static String charset = "utf-8";
+    private static String charset = "UTF-8";
     private static final String boundary = "*****";
 
     // Post方法访问服务器，返回json对象
-    public static JSONObject postRequest(Context context, String SendData, Map<String, File> files) {
+    public static JSONObject postRequest(Context context,String SendData, List<String> files) {
         try {
             String urlStr=APIAddress.SEND_URL;
-            Log.d("Post URL:", urlStr);
+            Log.d("Post URL", urlStr);
             URL url = new URL(urlStr);
             //String parameterString = buildParameterString(parameterMap, loginRequired);
-            Log.d("Post parameter:", SendData);
+            Log.d("Post parameter", SendData);
 
             HttpURLConnection con = (HttpURLConnection)  url.openConnection();
             /* 允许Input、Output，不使用Cache */
@@ -59,99 +64,151 @@ public class HttpUtil {
             con.setRequestMethod("POST");
             /* setRequestProperty */
             con.setConnectTimeout(10*1000);//超时时间
+            con.setReadTimeout(10*1000);
             con.setRequestProperty("Accept-Charset", "UTF-8");
             con.setRequestProperty("Connection", "Keep-Alive");
             con.setRequestProperty("Charset", charset);
 
-
-            String end = "/r/n";
+            JSONObject jsob=new JSONObject();
+            boolean uploadCheck=false,paraCheck=true;//是否上传图片，是否传递参数
+            String end = "\r\n";
             String hyphens = "--";
             String BOUNDARY = java.util.UUID.randomUUID().toString();
             con.setRequestProperty("Content-Type", "multipart/form-data;boundary=" + BOUNDARY);
+            JSONObject SendDataJSON=JSONUtil.jsonString2Object(SendData);
+            if(SendDataJSON!=null){
+                String page=SendDataJSON.getString("action");
+                String action=SendDataJSON.getString("method");
+                if(!page.equals("")&&!action.equals("")){
+                    if(page.equals("send")&&(action.equals("uploadmsg")||action.equals("uploadphoto")||action.equals("uploadavatar"))){
+                        uploadCheck=true;
+                    }
+                }else {
+                    return JSONUtil.returnmsg(0,"JSON格式有误！");
+                }
+            }else {
+                return JSONUtil.returnmsg(0,"JSON格式有误！");
+            }
             /* 设定DataOutputStream 发送文件数据*/
             DataOutputStream dos = new DataOutputStream(con.getOutputStream());
-            dos.writeBytes("SendData"+SendData);
-            if (files != null) {
+            if (files != null&&uploadCheck) {
                 int filei=0;
-                for (Map.Entry<String, File> file : files.entrySet()) {
-                    String sb = hyphens + BOUNDARY + end +
-                            "Content-Disposition: form-data; name=\"file" + filei + "\";filename=\"" + file.getKey() + "\"" + end + end;
-                    dos.write(sb.getBytes());
-                    InputStream is =  new FileInputStream(file.getValue());
-                    byte[] buffer = new byte[1024];
-                    int len = 0;
-                    while ((len = is.read(buffer)) != -1) {
-                        dos.write(buffer, 0, len);
+                for (String filepath : files) {
+                    if(filepath==null)
+                        continue;
+                    File file = new File(filepath);
+                    String filename = file.getName().toLowerCase();
+                    //没有传入文件类型，同时根据文件获取不到类型，默认采用application/octet-stream
+                    String contentType = null;
+                    //contentType非空采用filename匹配默认的图片类型
+                    if (filename.endsWith(".png")) {
+                        contentType = "image/png";
+                    }else if (filename.endsWith(".jpg") || filename.endsWith(".jpeg") || filename.endsWith(".jpe")) {
+                        contentType = "image/jpeg";
+                    }else if (filename.endsWith(".gif")) {
+                        contentType = "image/gif";
+                    }else if (filename.endsWith(".ico")) {
+                        contentType = "image/image/x-icon";
                     }
-                    is.close();
+                    if (contentType == null) {
+                        contentType = "application/octet-stream";
+                    }
+                    String sb = end + hyphens + BOUNDARY + end + "Content-Disposition: form-data; name=\"file" + filei + "\";filename=\"" + filename + "\"" + end + "Content-Type:" + contentType + end + end;
+                    dos.write(sb.getBytes());
+                    if(file.exists()){
+                        DataInputStream is =  new DataInputStream(new FileInputStream(file));
+                        byte[] buffer = new byte[1024];
+                        int len = 0;
+                        while ((len = is.read(buffer)) != -1) {
+                            dos.write(buffer, 0, len);
+                        }
+                        is.close();
+                    }else{
+                        paraCheck=false;
+                        break;
+                    }
                     dos.write(end.getBytes());
+                    filei++;
                 }
             }
-            byte[] end_data = (hyphens + BOUNDARY + hyphens + end).getBytes();
-            dos.write(end_data);
+            if(paraCheck)
+                dos.write((end + hyphens + BOUNDARY + end + "Content-Disposition: form-data; name=\"SendData\"" + end + end + SendData+ end).getBytes());
+            dos.write((end + hyphens + BOUNDARY + hyphens + end).getBytes());
             dos.flush();
+            dos.close();
 
-            InputStream in = con.getInputStream();
-            InputStreamReader isReader = new InputStreamReader(in);
-            BufferedReader bufReader = new BufferedReader(isReader);
+            if(!paraCheck) {
+                return JSONUtil.returnmsg(0,"需要上传的文件不存在！");
+            }else{
+                InputStream in = con.getInputStream();
+                InputStreamReader isReader = null;
+                BufferedReader bufReader = null;
 
-            switch (con.getResponseCode()) {
-                case HttpURLConnection.HTTP_OK:
-                case 301:
-                case 302:
-                case 404:
-                    break;
-                case 403:
-                    Log.d("Configuration error", "API_KEY or API_SECRET or system time error.");
-                    return null;
-                case 401:
-                    Log.d("Post Result","Code 401");
-                    CarbonForumApplication.userInfo.edit().clear().apply();
-                    Intent intent = new Intent(context, LoginActivity.class);
-                    context.startActivity(intent);
-                    break;
-                case 500:
-                    Log.d("Post Result","Code 500");
-                    return null;
-                default:
-                    throw new Exception("HTTP Request is not success, Response code is " + con.getResponseCode());
-            }
-            try {
-                String line = "";
-                StringBuilder data = new StringBuilder();
-                while ((line = bufReader.readLine()) != null) {
-                    data.append(line);
+                switch (con.getResponseCode()) {
+                    case HttpURLConnection.HTTP_OK:
+                    case 301:
+                    case 302:
+                    case 404:
+                        break;
+                    case 403:
+                        Log.d("Configuration error", "API_KEY or API_SECRET or system time error.");
+                        return JSONUtil.returnmsg(0, "Configuration error:API_KEY or API_SECRET or system time error.");
+                    case 401:
+                        Log.d("Post Result", "Code 401");
+                        CarbonForumApplication.userInfo.edit().clear().apply();
+                        Intent intent = new Intent(context, LoginActivity.class);
+                        context.startActivity(intent);
+                        break;
+                    case 500:
+                        Log.d("Post Result", "Code 500");
+                        return JSONUtil.returnmsg(0, "Post Result:Code 500");
+                    default:
+                        throw new Exception("HTTP Request is not success, Response code is " + con.getResponseCode());
                 }
-
-            /*//httpURLConnection.disconnect();//断开连接
-            String postResult = resultBuffer.toString();
-            Log.d("Post Result",postResult);
-            JSONTokener jsonParser = new JSONTokener(postResult);
-            return (JSONObject) jsonParser.nextValue();*/
-                String getResult = data.toString();
-                Log.d("Get URL : ", urlStr);
-                Log.d("Get Result",getResult);
-                return JSONUtil.jsonString2Object(getResult);
-            }  catch (Exception e) {
-                e.printStackTrace();
-                return null;
-            } finally {
-                if (bufReader != null) {
-                    bufReader.close();
-                }
-
-                if (isReader != null) {
-                    isReader.close();
-                }
-
-                if (in != null) {
-                    in.close();
+                try {
+                    isReader = new InputStreamReader(in);
+                    bufReader = new BufferedReader(isReader);
+                    String line = "";
+                    StringBuilder data = new StringBuilder();
+                    while ((line = bufReader.readLine()) != null) {
+                        data.append(line);
+                    }
+                /*//httpURLConnection.disconnect();//断开连接
+                String postResult = resultBuffer.toString();
+                Log.d("Post Result",postResult);
+                JSONTokener jsonParser = new JSONTokener(postResult);
+                return (JSONObject) jsonParser.nextValue();*/
+                    String getResult = data.toString();
+                    Pattern pattern = Pattern.compile(".*<body>(.*)</body>.*");
+                    Matcher matcher = pattern.matcher(getResult);
+                    while (matcher.find()) {
+                        getResult = matcher.group(1);
+                    }
+                    Log.d("Get URL : ", urlStr);
+                    Log.d("Get Result", getResult);
+                    JSONObject result=JSONUtil.jsonString2Object(getResult);
+                    if(result==null)
+                        return JSONUtil.returnmsg(0,"服务器传输的JSON格式有误！");
+                    return result;
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    return JSONUtil.returnmsg(0, "服务器返回JSON格式有误！");
+                } finally {
+                    if (bufReader != null) {
+                        bufReader.close();
+                    }
+                    if (isReader != null) {
+                        isReader.close();
+                    }
+                    if (in != null) {
+                        in.close();
+                    }
                 }
             }
         } catch (Exception e) {
             Log.d("Post Error", "No Network");
             e.printStackTrace();
-            return null;
+            return JSONUtil.returnmsg(0,"Post Error:No Network");
         }
     }
 

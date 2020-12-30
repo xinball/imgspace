@@ -49,4 +49,8 @@ public class JSONUtil {
             return null;
         }
     }
+    //return msg转JSONObject
+    public static JSONObject returnmsg(int returnvalue,String msg){
+        return jsonString2Object("{\"return\":" + returnvalue + ",\"returnmsg\":\""+msg+"\"}");
+    }
 }
