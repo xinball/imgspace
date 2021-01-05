@@ -6,16 +6,15 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.util.Log;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
+
 import top.xb.imgspace.LoginActivity;
-import top.xb.imgspace.application.CarbonForumApplication;
+import top.xb.imgspace.application.ImgSpaceApplication;
 import top.xb.imgspace.config.APIAddress;
 
-import org.json.JSONObject;
-import org.json.JSONTokener;
-
 import java.io.BufferedReader;
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.File;
@@ -23,8 +22,6 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.OutputStream;
-import java.io.OutputStreamWriter;
 import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.InetSocketAddress;
@@ -47,7 +44,7 @@ public class HttpUtil {
     private static final String boundary = "*****";
 
     // Post方法访问服务器，返回json对象
-    public static JSONObject postRequest(Context context,String SendData, List<String> files) {
+    public static JSONObject postRequest(Context context, String SendData, List<String> files) {
         try {
             String urlStr=APIAddress.SEND_URL;
             Log.d("Post URL", urlStr);
@@ -68,14 +65,13 @@ public class HttpUtil {
             con.setRequestProperty("Accept-Charset", "UTF-8");
             con.setRequestProperty("Connection", "Keep-Alive");
             con.setRequestProperty("Charset", charset);
-
             JSONObject jsob=new JSONObject();
             boolean uploadCheck=false,paraCheck=true;//是否上传图片，是否传递参数
             String end = "\r\n";
             String hyphens = "--";
             String BOUNDARY = java.util.UUID.randomUUID().toString();
             con.setRequestProperty("Content-Type", "multipart/form-data;boundary=" + BOUNDARY);
-            JSONObject SendDataJSON=JSONUtil.jsonString2Object(SendData);
+            JSONObject SendDataJSON=JSON.parseObject(SendData);
             if(SendDataJSON!=null){
                 String page=SendDataJSON.getString("action");
                 String action=SendDataJSON.getString("method");
@@ -91,12 +87,19 @@ public class HttpUtil {
             }
             /* 设定DataOutputStream 发送文件数据*/
             DataOutputStream dos = new DataOutputStream(con.getOutputStream());
+            String msg=null;
             if (files != null&&uploadCheck) {
                 int filei=0;
                 for (String filepath : files) {
                     if(filepath==null)
                         continue;
                     File file = new File(filepath);
+                    long filesize=file.length();
+                    if(filesize>10*1024*1024){
+                        msg="文件大小太大，上传失败！";
+                        paraCheck=false;
+                        break;
+                    }
                     String filename = file.getName().toLowerCase();
                     //没有传入文件类型，同时根据文件获取不到类型，默认采用application/octet-stream
                     String contentType = null;
@@ -124,6 +127,7 @@ public class HttpUtil {
                         }
                         is.close();
                     }else{
+                        msg="需要上传的文件不存在！";
                         paraCheck=false;
                         break;
                     }
@@ -138,7 +142,7 @@ public class HttpUtil {
             dos.close();
 
             if(!paraCheck) {
-                return JSONUtil.returnmsg(0,"需要上传的文件不存在！");
+                return JSONUtil.returnmsg(0,msg);
             }else{
                 InputStream in = con.getInputStream();
                 InputStreamReader isReader = null;
@@ -155,7 +159,7 @@ public class HttpUtil {
                         return JSONUtil.returnmsg(0, "Configuration error:API_KEY or API_SECRET or system time error.");
                     case 401:
                         Log.d("Post Result", "Code 401");
-                        CarbonForumApplication.userInfo.edit().clear().apply();
+                        ImgSpaceApplication.userInfo.edit().clear().apply();
                         Intent intent = new Intent(context, LoginActivity.class);
                         context.startActivity(intent);
                         break;
@@ -173,11 +177,11 @@ public class HttpUtil {
                     while ((line = bufReader.readLine()) != null) {
                         data.append(line);
                     }
-                /*//httpURLConnection.disconnect();//断开连接
-                String postResult = resultBuffer.toString();
-                Log.d("Post Result",postResult);
-                JSONTokener jsonParser = new JSONTokener(postResult);
-                return (JSONObject) jsonParser.nextValue();*/
+                    /*//httpURLConnection.disconnect();//断开连接
+                    String postResult = resultBuffer.toString();
+                    Log.d("Post Result",postResult);
+                    JSONTokener jsonParser = new JSONTokener(postResult);
+                    return (JSONObject) jsonParser.nextValue();*/
                     String getResult = data.toString();
                     Pattern pattern = Pattern.compile(".*<body>(.*)</body>.*");
                     Matcher matcher = pattern.matcher(getResult);
@@ -186,13 +190,10 @@ public class HttpUtil {
                     }
                     Log.d("Get URL : ", urlStr);
                     Log.d("Get Result", getResult);
-                    JSONObject result=JSONUtil.jsonString2Object(getResult);
-                    if(result==null)
-                        return JSONUtil.returnmsg(0,"服务器传输的JSON格式有误！");
-                    return result;
+                    return JSON.parseObject(getResult);
                 } catch (Exception e) {
                     e.printStackTrace();
-                    return JSONUtil.returnmsg(0, "服务器返回JSON格式有误！");
+                    return JSONUtil.returnmsg(0, "服务器返回数据格式有误！");
                 } finally {
                     if (bufReader != null) {
                         bufReader.close();
@@ -257,21 +258,21 @@ public class HttpUtil {
                 .append("SValue").append("=")
                 .append(MD5Util.md5(APIAddress.API_KEY + APIAddress.API_SECRET + currentTimeStamp));
 
-        if(loginRequired && CarbonForumApplication.isLoggedIn()){
+        if(loginRequired && ImgSpaceApplication.isLoggedIn()){
             parameterBuffer
                     .append("&")
                     .append("AuthUserID").append("=")
-                    .append(CarbonForumApplication.userInfo.getString("UserID", ""))
+                    .append(ImgSpaceApplication.userInfo.getString("UserID", ""))
                     .append("&")
                     .append("AuthUserExpirationTime").append("=")
-                    .append(CarbonForumApplication.userInfo.getString("UserExpirationTime", ""))
+                    .append(ImgSpaceApplication.userInfo.getString("UserExpirationTime", ""))
                     .append("&")
                     .append("AuthUserCode").append("=")
-                    .append(CarbonForumApplication.userInfo.getString("UserCode", ""));
+                    .append(ImgSpaceApplication.userInfo.getString("UserCode", ""));
         }
         if (parameterMap != null) {
             parameterBuffer.append("&");
-            Iterator iterator = parameterMap.keySet().iterator();
+            Iterator<String> iterator = parameterMap.keySet().iterator();
             String key = null;
             String value = null;
             while (iterator.hasNext()) {

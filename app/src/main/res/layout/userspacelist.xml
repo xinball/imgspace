@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    >
+
+    <TextView
+        android:id="@+id/userspace_Day"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="5dp"
+        android:layout_marginTop="24dp"
+        android:text="12/31"
+        android:textColor="#000000"
+        android:textSize="20sp"
+        android:textStyle="bold" />
+    <TextView
+        android:id="@+id/userspace_Year"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/userspace_Day"
+        android:layout_marginStart="5dp"
+        android:text="2020"
+        android:textColor="#000000"
+        android:textSize="24sp"
+        android:textStyle="bold" />
+    <TextView
+        android:id="@+id/userspace_content"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/black"
+        android:textSize="16sp"
+        android:text="什么都没有写……"
+        android:layout_toEndOf="@id/userspace_Day"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="24dp"
+        />
+    <top.xb.imgspace.view.NoScrollGridView
+        android:id="@+id/userspace_photogrid"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:numColumns="3"
+        android:horizontalSpacing="1dp"
+        android:layout_toEndOf="@id/userspace_Day"
+        android:layout_below="@id/userspace_content"
+        android:layout_marginTop="15dp"
+        android:layout_marginStart="15dp"
+        android:layout_marginEnd="15dp"
+        android:layout_marginBottom="15dp"
+        android:gravity="center"
+        />
+    <TextView
+        android:id="@+id/userspace_time"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/black"
+        android:textSize="12sp"
+        android:text="发布：23:59:59"
+        android:layout_toEndOf="@id/userspace_Day"
+        android:layout_marginStart="10dp"
+        android:layout_below="@+id/userspace_photogrid"
+        />
+    <TextView
+        android:id="@+id/userspace_altertime"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/black"
+        android:textSize="12sp"
+        android:text="修改：2020/12/31 23:59:59"
+        android:layout_toEndOf="@+id/userspace_time"
+        android:layout_marginStart="15dp"
+        android:layout_below="@+id/userspace_photogrid"
+        />
+</RelativeLayout>

@@ -1,5 +1,6 @@
 package top.xb.imgspace.application;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.Application;
 import android.content.Context;
@@ -15,19 +16,38 @@ import com.mikepenz.materialdrawer.util.AbstractDrawerImageLoader;
 import com.mikepenz.materialdrawer.util.DrawerImageLoader;
 import com.mikepenz.materialdrawer.util.DrawerUIUtils;
 
-public class CarbonForumApplication extends Application {
+public class ImgSpaceApplication extends Application {
 
     public static SharedPreferences userInfo;
+    public static SharedPreferences msgInfo;
     public static SharedPreferences cacheSharedPreferences;
 
     public static Boolean isLoggedIn(){
-        return Integer.parseInt(userInfo.getString("UserID", "0")) > 0;
+        return userInfo.getString("uid", null)!=null&&userInfo.getString("pwd", null)!=null;
     }
-
+    public static Boolean isFirstStart(){
+        return userInfo.getInt("start", 1)==1;
+    }
+    public static String getUid(){
+        return userInfo.getString("uid", null);
+    }
+    public static String getPwd(){
+        return userInfo.getString("pwd", null);
+    }
+    public static String getName(){
+        return userInfo.getString("name", null);
+    }
+    public static String getTel(){
+        return userInfo.getString("tel", null);
+    }
+    public static boolean getRememberPwd(){
+        return userInfo.getBoolean("rememberPwd", true);
+    }
     @Override
     public void onCreate() {
         super.onCreate();
         userInfo = getApplicationContext().getSharedPreferences("UserInfo", Activity.MODE_PRIVATE);
+        msgInfo = getApplicationContext().getSharedPreferences("MsgInfo", Activity.MODE_PRIVATE);
         //获取缓存
         cacheSharedPreferences = getSharedPreferences("MainCache", Activity.MODE_PRIVATE);
         /*

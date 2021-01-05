@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".RealPicture">
+    <!--
+    <ImageView
+        android:id="@+id/real_image"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:scaleType="centerCrop"
+        tools:ignore="MissingConstraints" />
+        -->
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent">
+        <androidx.viewpager.widget.ViewPager
+            android:id="@+id/viewpager"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"/>
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/real_bottomtitle"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:background="#00FFFFFF" >
+
+        <Button
+            android:id="@+id/realShare_btn"
+            style="@style/Widget.AppCompat.Button.Borderless"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="#00FFFFFF"
+            android:drawableTop="@android:drawable/ic_menu_share"
+            android:onClick="share"
+            android:padding="12dp"
+            android:text="分享"
+            android:textColor="@color/black"
+            app:backgroundTint="#00FFFFFF" />
+
+        <Button
+            android:id="@+id/realEdit_btn"
+            style="@style/Widget.AppCompat.Button.Borderless"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="#00FFFFFF"
+            android:drawableTop="@android:drawable/ic_menu_edit"
+            android:onClick="edit"
+            android:padding="12dp"
+            android:text="编辑"
+            android:textColor="@color/black"
+            app:backgroundTint="#00FFFFFF" />
+
+        <Button
+            android:id="@+id/realDelete_btn"
+            style="@style/Widget.AppCompat.Button.Borderless"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="#00FFFFFF"
+            android:drawableTop="@android:drawable/ic_menu_delete"
+            android:onClick="delete"
+            android:padding="12dp"
+            android:text="删除"
+            android:textColor="@color/black"
+            app:backgroundTint="#00FFFFFF" />
+
+        <Button
+            android:id="@+id/realMenu_btn"
+            style="@style/Widget.AppCompat.Button.Borderless"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:drawableTop="@android:drawable/ic_menu_info_details"
+            android:onClick="menu"
+            android:padding="12dp"
+            android:text="菜单"
+            android:textColor="@color/black"
+            android:background="#00FFFFFF"
+            app:backgroundTint="#00FFFFFF" />
+    </LinearLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -1,9 +1,15 @@
 package top.xb.imgspace.config;
+
+import android.os.Environment;
+
 public class APIAddress
 {
 	public static final String WEBSITE_PATH = "/imgsite"; //Website path, You can leave it blank in most cases.
 	public static final String API_KEY = "12450"; //Application key you set in ```config.php```
 	public static final String API_SECRET = "b40484df0ad979d8ba7708d24c301c38"; //Application secret you set in ```config.php```
+
+	public static String LocalcachePath= "/xinball/img/local/";
+	public static String WebcachePath= "/xinball/img/web/";
 	//活动被打开？
 	public static boolean StartActivity=false;
 	public static boolean MainActivity=false;

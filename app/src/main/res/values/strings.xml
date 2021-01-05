@@ -10,6 +10,7 @@
     <string name="action_share">分享</string>
     <string name="avatar">头像</string>
     <string name="network_error">网络错误</string>
+    <string name="service_error">服务器错误</string>
 
     <!--TimeUtil Start-->
     <string name="just_now">置顶</string>
@@ -20,4 +21,9 @@
     <!--TimeUtil End-->
 
     <string name="title_activity_topic">主题</string>
+    <string name="title_activity_main">MainActivity</string>
+
+    <string name="title_home">本地</string>
+    <string name="title_space">空间</string>
+    <string name="title_setting">设置</string>
 </resources>

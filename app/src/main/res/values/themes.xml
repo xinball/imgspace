@@ -2,18 +2,20 @@
     <!-- Base application theme. -->
     <style name="Theme.图片空间" parent="Theme.MaterialComponents.Light.NoActionBar">
         <!-- Primary brand color. -->
-        <item name="colorPrimary">@color/purple_500</item>
+        <item name="colorPrimary">@android:color/holo_red_light</item>
         <item name="colorPrimaryVariant">@android:color/holo_red_light</item>
         <item name="colorOnPrimary">@color/white</item>
         <!-- Secondary brand color. -->
-        <item name="colorSecondary">@color/teal_200</item>
-        <item name="colorSecondaryVariant">@color/teal_700</item>
+        <item name="colorSecondary">@color/white</item>
+        <item name="colorSecondaryVariant">@color/white</item>
         <item name="colorOnSecondary">@color/black</item>
         <!-- Status bar color. -->
         <item name="android:statusBarColor" tools:targetApi="l">?attr/colorPrimaryVariant</item>
         <!-- Customize your theme here. -->
     </style>
-    <style name="Start" parent="Theme.AppCompat.Light.NoActionBar">
+    <style name="Start" parent="Theme.MaterialComponents.Light.NoActionBar">
+        <item name="colorPrimary">@android:color/holo_red_light</item>
+        <item name="colorPrimaryVariant">@android:color/holo_red_light</item>
         <item name="android:windowBackground">@drawable/start</item>
         <item name="android:windowIsTranslucent">false</item>
         <item name="android:windowSoftInputMode">stateHidden|adjustPan</item>

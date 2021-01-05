@@ -1,9 +1,9 @@
 package top.xb.imgspace.utils;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-import org.json.JSONTokener;
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONException;
+import com.alibaba.fastjson.JSONObject;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -20,14 +20,10 @@ public class JSONUtil {
             try {
                 JSONArray jsonArray = jsonObject.getJSONArray(keyName);
 
-                for (int i = 0; i < jsonArray.length(); i++) {
-                    JSONObject jsonObject2 = jsonArray.getJSONObject(i);
+                for (Object jsonObject2:jsonArray) {
                     Map<String, Object> map = new HashMap<>();
-                    Iterator<String> iterator = jsonObject2.keys();
-                    while (iterator.hasNext()) {
-                        String key = iterator.next();
-                        Object value = jsonObject2.get(key);
-                        map.put(key, value);
+                    for(Map.Entry<String,Object> entry:((JSONObject)jsonObject2).entrySet()){
+                        map.put(entry.getKey(),entry.getValue());
                     }
                     list.add(map);
                 }
@@ -40,17 +36,12 @@ public class JSONUtil {
             return null;
         }
     }
-    public static JSONObject jsonString2Object(String jsonString){
-        try {
-            JSONTokener jsonParser = new JSONTokener(jsonString);
-            return (JSONObject) jsonParser.nextValue();
-        } catch (JSONException e) {
-            e.printStackTrace();
-            return null;
-        }
-    }
-    //return msg转JSONObject
+
+
+    //return msg转String
     public static JSONObject returnmsg(int returnvalue,String msg){
-        return jsonString2Object("{\"return\":" + returnvalue + ",\"returnmsg\":\""+msg+"\"}");
+        return JSON.parseObject("{\"return\":" + returnvalue + ",\"returnmsg\":\"" + msg + "\"}");
     }
+
+
 }

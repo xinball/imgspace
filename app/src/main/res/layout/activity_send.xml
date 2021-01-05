@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/sendForm"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/start"
+    android:orientation="vertical"
+    android:padding="8dp"
+    tools:context=".SendActivity">
+
+    <RelativeLayout
+        android:id="@+id/Layout_top"
+        android:layout_width="fill_parent"
+        android:layout_height="60dp"
+        android:layout_marginTop="5dp"
+        android:gravity="center"
+        android:orientation="horizontal">
+        <TextView
+            android:id="@+id/send_head"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="发布消息"
+            android:textSize="25sp" />
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/Layout_btn"
+        android:layout_width="fill_parent"
+        android:layout_height="60dp"
+        android:layout_margin="5dp"
+        android:gravity="center"
+        android:orientation="horizontal">
+
+    <Button
+        android:id="@+id/send_btn1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:padding="5dp"
+        android:layout_margin="5dp"
+        android:text="发布"
+        android:textSize="20sp"
+        app:backgroundTint="@android:color/holo_red_light" />
+
+
+        <Button
+            android:id="@+id/send_btn2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_toRightOf="@+id/send_btn1"
+            android:layout_toEndOf="@+id/send_btn1"
+            android:padding="5dp"
+            android:layout_margin="5dp"
+            android:text="取消"
+            android:textSize="20sp"
+            app:backgroundTint="#574E4E" />
+    </RelativeLayout>
+    <!-- 显示图片 -->
+    <RelativeLayout
+        android:id="@+id/Content_Layout"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:gravity="center">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_alignParentBottom="true"
+            android:layout_marginBottom="0dp"
+            android:orientation="vertical">
+            <!-- 设置运行多行 设置圆角图形 黑色字体-->
+            <!-- 网格显示图片 行列间距5dp 每列宽度90dp -->
+
+            <ProgressBar
+                android:id="@+id/sendProgress"
+                style="?android:attr/progressBarStyle"
+                android:layout_width="60dp"
+                android:layout_height="60dp"
+                android:layout_gravity="center"
+                android:indeterminateDrawable="@drawable/progressbar"
+                android:visibility="gone" />
+
+            <EditText
+                android:id="@+id/editText1"
+                android:layout_width="fill_parent"
+                android:layout_height="120dp"
+                android:layout_margin="12dp"
+                android:background="#CCFFFFFF"
+                android:gravity="top"
+                android:hint="请输入您要分享的文字"
+                android:maxLength="500"
+                android:singleLine="false"
+                android:textColor="#000000"
+                android:textSize="20sp" />
+
+            <GridView
+                android:id="@+id/gridView1"
+                android:layout_width="fill_parent"
+                android:layout_height="300dp"
+                android:layout_margin="10dp"
+                android:columnWidth="90dp"
+                android:gravity="center"
+                android:horizontalSpacing="5dp"
+                android:verticalSpacing="5dp"
+                android:listSelector="#00000000"
+                android:numColumns="3"
+                android:stretchMode="columnWidth"
+                android:backgroundTint="@color/white"></GridView>
+
+            <TextView
+                android:id="@+id/send_bottom"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text="(友情提示:只能添加9张图片,长按图片可以删除已添加图片)" />
+        </LinearLayout>
+
+    </RelativeLayout>
+
+
+</LinearLayout>

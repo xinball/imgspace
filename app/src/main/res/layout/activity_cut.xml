@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/black"
+    tools:context=".Cut">
+
+
+    <site.iway.androidhelpers.ImageCropper
+        android:id="@+id/image_cut"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:scaleType="center"
+        app:layout_constraintBottom_toTopOf="@id/bottom_cut"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent" />
+    <LinearLayout
+        android:id="@+id/bottom_cut"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:orientation="horizontal">
+        <Button
+            android:id="@+id/cut_no"
+            android:background="#00FFFFFF"
+            app:backgroundTint="#00FFFFFF"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:textColor="@color/white"
+            android:textSize="20sp"
+            android:padding="4dp"
+            android:layout_height="match_parent"
+            android:onClick="back"
+            android:text="返回"/>
+
+        <Button
+            android:id="@+id/cut_yes"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="match_parent"
+            android:background="#00FFFFFF"
+            android:onClick="Yes"
+            android:text="裁剪"
+            android:textColor="@color/white"
+            android:textSize="20sp"
+            android:padding="4dp"
+            app:backgroundTint="#00FFFFFF" />
+    </LinearLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>
