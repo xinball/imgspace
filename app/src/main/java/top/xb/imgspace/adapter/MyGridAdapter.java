@@ -41,15 +41,12 @@ public class MyGridAdapter extends BaseAdapter {
         if(photos==null||photos.size()==0)
             self=false;
         else{
-            if(photos.get(0).uid.equals(ImgSpaceApplication.getUid()))
-                self=true;
-            else
-                self=false;
+            self= photos.get(0).uid.equals(ImgSpaceApplication.getUid());
         }
     }
     @Override
     public int getCount() {
-        if(photos!=null||photos.size()==0){
+        if(photos!=null){
             Log.i(TAG, "getCount: "+photos.size());
             return photos.size();
         }else
@@ -58,7 +55,7 @@ public class MyGridAdapter extends BaseAdapter {
 
     @Override
     public Object getItem(int position) {
-        if(photos!=null||photos.size()==0)
+        if(photos!=null)
             return photos.get(position);
         else
             return null;

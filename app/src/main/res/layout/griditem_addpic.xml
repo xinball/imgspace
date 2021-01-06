@@ -18,11 +18,11 @@
         <ImageView
 
             android:id="@+id/imageView1"
+            android:padding="10dp"
             android:layout_width="fill_parent"
             android:layout_height="fill_parent"
             android:scaleType="fitXY"
             android:src="@android:drawable/ic_menu_add"
-            android:tint="#000000"
             app:srcCompat="@android:drawable/ic_menu_add" />
     </RelativeLayout>
 </LinearLayout>

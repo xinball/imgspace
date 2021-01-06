@@ -63,5 +63,11 @@ public class HTTPSTrustManager implements X509TrustManager {
             e.printStackTrace();
         }
         HttpsURLConnection.setDefaultSSLSocketFactory(context.getSocketFactory());
+        HttpsURLConnection.setDefaultHostnameVerifier(new HostnameVerifier() {
+            @Override
+            public boolean verify(String s, SSLSession sslSession) {
+                return true;
+            }
+        });
     }
 }

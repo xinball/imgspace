@@ -11,10 +11,24 @@ import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
 import top.xb.imgspace.R;
+import top.xb.imgspace.utils.HTTPSTrustManager;
+
 import com.mikepenz.iconics.IconicsDrawable;
 import com.mikepenz.materialdrawer.util.AbstractDrawerImageLoader;
 import com.mikepenz.materialdrawer.util.DrawerImageLoader;
 import com.mikepenz.materialdrawer.util.DrawerUIUtils;
+
+import java.security.KeyManagementException;
+import java.security.NoSuchAlgorithmException;
+import java.security.SecureRandom;
+import java.security.cert.X509Certificate;
+
+import javax.net.ssl.HostnameVerifier;
+import javax.net.ssl.HttpsURLConnection;
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.SSLSession;
+import javax.net.ssl.TrustManager;
+import javax.net.ssl.X509TrustManager;
 
 public class ImgSpaceApplication extends Application {
 
@@ -42,6 +56,16 @@ public class ImgSpaceApplication extends Application {
     }
     public static boolean getRememberPwd(){
         return userInfo.getBoolean("rememberPwd", true);
+    }
+
+    public static void clear(Context context){
+        SharedPreferences.Editor editor = ImgSpaceApplication.userInfo.edit();
+        editor.remove("uid");
+        editor.remove("pwd");
+        editor.remove("name");
+        editor.remove("tel");
+        editor.remove("rememberPwd");
+        editor.apply();
     }
     @Override
     public void onCreate() {
@@ -95,5 +119,37 @@ public class ImgSpaceApplication extends Application {
                 return super.placeholder(ctx, tag);
             }
         });
+    }
+
+
+
+    public static void allowAllSSL(){
+        try {
+            TrustManager[] trustManagers =new TrustManager[]{new X509TrustManager(){
+                public X509Certificate[] getAcceptedIssuers() {
+                    return new X509Certificate[0];
+                }
+                @Override
+                public void checkClientTrusted(X509Certificate[] certs, String authType) {
+
+                }
+                @Override
+                public void checkServerTrusted(X509Certificate[] certs, String authType){
+                }
+            }};
+            SSLContext context = SSLContext.getInstance("TLS");
+            context.init(null,trustManagers,new SecureRandom());
+            HttpsURLConnection.setDefaultSSLSocketFactory(context.getSocketFactory());
+            HttpsURLConnection.setDefaultHostnameVerifier(new HostnameVerifier() {
+                @Override
+                public boolean verify(String s, SSLSession sslSession) {
+                    return true;
+                }
+            });
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+        } catch (KeyManagementException e) {
+            e.printStackTrace();
+        }
     }
 }

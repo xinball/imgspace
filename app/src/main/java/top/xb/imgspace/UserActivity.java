@@ -24,9 +24,12 @@ import android.widget.ScrollView;
 import android.widget.Toast;
 
 import com.alibaba.fastjson.JSONObject;
+import com.bumptech.glide.Glide;
 import com.google.android.material.snackbar.Snackbar;
 
 import top.xb.imgspace.application.ImgSpaceApplication;
+import top.xb.imgspace.bean.PriUser;
+import top.xb.imgspace.config.APIAddress;
 import top.xb.imgspace.utils.AuthUtil;
 import top.xb.imgspace.utils.DisplayUtil;
 import top.xb.imgspace.utils.HttpUtil;
@@ -47,22 +50,38 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 
+import org.w3c.dom.Text;
+
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 
 public class UserActivity extends AppCompatActivity {
+    private static final String TAG = "UserActivity";
     private UserTask userTask;
     private ProgressBar userProgressView;
     private ScrollView userView;
+    PriUser priuser;
 
     private ImageButton change_ig;
     private Button change_every;
     private ImageView iv_photo;
     private Bitmap head;// 头像Bitmap
-    private static String path = "/sdcard/myHead/";// sd路径
 
+    TextView tv_accout;
+    TextView tv_emailname;
+    TextView tv_telname;
+    TextView tv_fakeusername;
+    TextView tv_sexname;
+    TextView tv_truename;
+    TextView tv_addressname;
+    TextView tv_yearname;
+    TextView tv_monthname;
+    TextView tv_dayname;
+    Button btn_tospace;
+
+    private TextView tv_user_show_name;
     private Context mContext;
 
 
@@ -96,35 +115,46 @@ public class UserActivity extends AppCompatActivity {
         change_ig.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                switch (v.getId()) {
-                    case R.id.touxiang:// 更换头像
-                        showTypeDialog();
-                        break;
-                }
+                // 更换头像
+                 showTypeDialog();
             }
         });
+        userProgressView=findViewById(R.id.userProgress);
+        userView=findViewById(R.id.userview);
+        tv_user_show_name=findViewById(R.id.tv_user_show_name);
 
 
+        tv_accout=findViewById(R.id.tv_accout);
+        tv_emailname=findViewById(R.id.tv_emailname);
+        tv_telname=findViewById(R.id.tv_telname);
+        tv_fakeusername=findViewById(R.id.tv_fakeusername);
+        tv_sexname=findViewById(R.id.tv_sexname);
+        tv_truename=findViewById(R.id.tv_truename);
+        tv_addressname=findViewById(R.id.tv_addressname);
+        tv_yearname=findViewById(R.id.tv_yearname);
+        tv_monthname=findViewById(R.id.tv_monthname);
+        tv_dayname=findViewById(R.id.tv_dayname);
+        btn_tospace=findViewById(R.id.btn_tospace);
+        Intent intent=getIntent();
+        String uid=intent.getStringExtra("uid");
+        if(uid!=null&&uid.equals(""))
+            uid=null;
+        //Toast.makeText(mainActivity,"send ok!", Toast.LENGTH_SHORT).show();
+        userTask = new UserTask(uid);
+        DisplayUtil.showProgress(this,userProgressView,userView,true);
+        userTask.execute();
+
+        btn_tospace.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent=new Intent(UserActivity.this, UserspaceActivity.class);
+                intent.putExtra("uid",priuser.uid);
+                startActivity(intent);
+            }
+        });
     }
 
 
-
-    //主函数结束
-    private void initView() {
-
-
-        Bitmap bt = BitmapFactory.decodeFile(path + "head.jpg");// 从SD卡中找头像，转换成Bitmap
-        if (bt != null) {
-            @SuppressWarnings("deprecation")
-            Drawable drawable = new BitmapDrawable(bt);// 转换成drawable
-            change_ig.setImageDrawable(drawable);
-        } else {
-            /**
-             * 如果SD里面没有则需要从服务器取头像，取回来的头像再保存在SD中
-             *
-             */
-        }
-    }
     private void showTypeDialog() {
         //显示对话框
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
@@ -135,14 +165,13 @@ public class UserActivity extends AppCompatActivity {
         tv_select_gallery.setOnClickListener(new View.OnClickListener() {// 在相册中选取
             @Override
             public void onClick(View v) {
-                Intent intent1 = new Intent(Intent.ACTION_PICK, null);
+                Intent intent = new Intent(Intent.ACTION_PICK, null);
                 //打开文件
-                intent1.setDataAndType(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, "image/*");
-                startActivityForResult(intent1, 1);
+                intent.setDataAndType(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, "image/*");
+                startActivityForResult(intent, 1);
                 dialog.dismiss();
             }
         });
-
         dialog.setView(view);
         dialog.show();
     }
@@ -204,16 +233,18 @@ public class UserActivity extends AppCompatActivity {
 
     private void setPicToView(Bitmap mBitmap) {
         String sdStatus = Environment.getExternalStorageState();
+        String path=sdStatus+APIAddress.WebcachePath;
         if (!sdStatus.equals(Environment.MEDIA_MOUNTED)) { // 检测sd是否可用
             return;
         }
         FileOutputStream b = null;
         File file = new File(path);
         file.mkdirs();// 创建文件夹
-        String fileName = path + "head.jpg";// 图片名字
+        priuser.avatar=".png";
+        String fileName = path + priuser.uid+priuser.avatar;// 图片名字
         try {
             b = new FileOutputStream(fileName);
-            mBitmap.compress(Bitmap.CompressFormat.JPEG, 100, b);// 把数据写入文件
+            mBitmap.compress(Bitmap.CompressFormat.PNG, 100, b);// 把数据写入文件
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         } finally {
@@ -237,7 +268,7 @@ public class UserActivity extends AppCompatActivity {
 
         UserTask(String uid) {
             this.uid=uid;
-            SendData="{\"action\":\"send\","+"\"method\":\"userinfo\","+"\"uid\":\"" + uid + "\"}";
+            SendData="{\"action\":\"receive\","+"\"method\":\"userinfo\","+"\"uid\":\"" + uid + "\"}";
         }
         @Override
         protected JSONObject doInBackground(Void... params) {
@@ -252,14 +283,30 @@ public class UserActivity extends AppCompatActivity {
                 try {
                     Log.v("JSON", result.toString());
                     if (result.getIntValue("return") == 1) {
-                        SharedPreferences.Editor editor = ImgSpaceApplication.userInfo.edit();
-                        editor.apply();
-                        //发送广播刷新
+                        priuser= result.getObject("returnmsg",PriUser.class);
+                        //头像
+                        String avatarFile=priuser.uid+priuser.avatar;
+                        Log.i(TAG,"avatarFile"+avatarFile);
+                        String avatarPath= APIAddress.WEB_IMG_URL+avatarFile;
+                        Log.i(TAG,"avatarPath"+avatarPath);
+                        File avatarcache=new File(Environment.getExternalStorageDirectory()+APIAddress.WebcachePath+avatarFile);
+                        Log.i(TAG,"avatarcache"+avatarcache);
+                        if(avatarcache.exists())
+                            Glide.with(getApplicationContext()).load(avatarcache.getPath()).override(40,40).into(change_ig);
+                        else
+                            Glide.with(getApplicationContext()).load(avatarPath).override(40,40).into(change_ig);
+                        tv_user_show_name.setText(priuser.name);
 
-                        Intent intent = new Intent();
-                        intent.setAction("sendOK");
-                        sendBroadcast(intent);
-                        finish();
+                        tv_accout.setText(priuser.slogan);
+                        tv_emailname.setText(priuser.email);
+                        tv_telname.setText(priuser.tel);
+                        tv_fakeusername.setText(priuser.nickname);
+                        tv_sexname.setText(priuser.sex);
+                        tv_truename.setText(priuser.realname);
+                        tv_addressname.setText(priuser.livead);
+                        //tv_yearname.setText(priuser.birthday);
+                        //tv_monthname.setText(priuser.birthday);
+                        //tv_dayname.setText(priuser.birthday);
                     } else {
                         Toast.makeText(getApplicationContext(), result.getString("returnmsg"), Toast.LENGTH_SHORT).show();
                     }

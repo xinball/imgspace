@@ -6,11 +6,16 @@ import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.app.Activity;
 import androidx.appcompat.app.AlertDialog;
+
+import android.content.ClipData;
+import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Build;
+import android.provider.MediaStore;
 import android.util.Log;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
@@ -91,6 +96,27 @@ public class DisplayUtil {
     //快捷删除提示框
     public static void dialogProcess(Context context,String message,boolean Cancelable,String title, String posiBtn, String negaBtn) {
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
+        builder.setMessage(message);
+        builder.setTitle(title);
+        builder.setCancelable(Cancelable);
+        builder.setIcon(context.getResources().getDrawable(R.drawable.progressbar));
+        if(posiBtn!=null)
+        builder.setPositiveButton(posiBtn, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int which) {
+            }
+        });
+        if(negaBtn!=null)
+        builder.setNegativeButton(negaBtn, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int which) {
+            }
+        });
+        builder.create().show();
+    }
+    //快捷删除提示框
+    public static void adialogProcess(Context context,String message,boolean Cancelable,String title, String posiBtn, String negaBtn) {
+        android.app.AlertDialog.Builder builder = new android.app.AlertDialog.Builder(context);
         builder.setMessage(message);
         builder.setTitle(title);
         builder.setCancelable(Cancelable);

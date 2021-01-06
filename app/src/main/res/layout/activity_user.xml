@@ -1,100 +1,102 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#ebebeb"
     android:orientation="vertical" >
 
-
-
-
-
     <ScrollView
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:scrollbars="none">
+        android:id="@+id/userview"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:scrollbars="none"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical" >
+            android:orientation="vertical">
 
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="64dp"
-                android:layout_marginBottom="18dp"
-                android:layout_marginTop="16dp" >
+                android:layout_marginTop="60dp"
+                android:layout_marginBottom="18dp">
 
                 <ImageButton
                     android:id="@+id/touxiang"
-                    android:layout_width="64dp"
-                    android:layout_height="64dp"
-                    android:layout_marginLeft="15dp"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:layout_marginStart="15dp"
                     android:background="@drawable/imgspace" />
 
                 <LinearLayout
                     android:id="@+id/ll_name"
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="16dp"
+                    android:layout_marginStart="16dp"
                     android:layout_marginTop="10dp"
-                    android:layout_toRightOf="@id/touxiang"
-                    android:orientation="horizontal" >
+                    android:layout_toEndOf="@id/touxiang"
+                    android:orientation="horizontal">
 
                     <TextView
                         android:id="@+id/tv_user_show_name"
-                        android:layout_width="150dp"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:text="黄方意"
                         android:textColor="#353535"
-                        android:textSize="18sp" />
+                        android:textSize="16sp" />
 
                 </LinearLayout>
-                <TextView
+
+                <EditText
                     android:id="@+id/tv_accout"
-                    android:layout_marginLeft="16dp"
-                    android:layout_marginTop="5dp"
-                    android:layout_below="@+id/ll_name"
-                    android:layout_toRightOf="@id/touxiang"
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="点击头像进行修改"
+                    android:layout_below="@+id/ll_name"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginTop="5dp"
+                    android:layout_toEndOf="@id/touxiang"
+                    android:text=""
                     android:textColor="#AAAAAA"
-                    android:textSize="14sp" />
+                    android:textSize="12sp" />
             </RelativeLayout>
+
 
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="48dp"
                 android:background="#ffffff"
                 android:paddingLeft="12dp"
-                android:paddingRight="12dp" >
+                android:paddingRight="12dp">
+
+                <EditText
+                    android:id="@+id/tv_emailname"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_toEndOf="@+id/tv_email"
+                    android:background="@null"
+                    android:text=""
+                    android:textColor="#AAAAAA"
+                    android:textSize="14sp" />
 
                 <TextView
                     android:id="@+id/tv_email"
                     android:layout_width="96dp"
                     android:layout_height="wrap_content"
-                    android:layout_alignParentLeft="true"
+                    android:layout_alignParentStart="true"
                     android:layout_centerVertical="true"
-                    android:paddingLeft="8dp"
+                    android:paddingStart="8dp"
                     android:text="邮箱"
                     android:textColor="#AAAAAA"
                     android:textSize="16sp" />
-
-                <EditText
-                    android:id="@+id/tv_emailname"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_centerVertical="true"
-                    android:layout_toRightOf="@+id/tv_email"
-                    android:text="什么都未留下..."
-                    android:background="@null"
-                    android:textColor="#AAAAAA"
-                    android:textSize="14sp" />
 
                 <View
                     android:layout_width="match_parent"
@@ -108,30 +110,30 @@
                 android:layout_height="48dp"
                 android:background="#ffffff"
                 android:paddingLeft="12dp"
-                android:paddingRight="12dp" >
+                android:paddingRight="12dp">
+
+                <EditText
+                    android:id="@+id/tv_telname"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_toRightOf="@+id/tv_tel"
+                    android:background="@null"
+                    android:singleLine="true"
+                    android:text=""
+                    android:textColor="#AAAAAA"
+                    android:textSize="14sp" />
 
                 <TextView
                     android:id="@+id/tv_tel"
                     android:layout_width="96dp"
                     android:layout_height="wrap_content"
-                    android:layout_alignParentLeft="true"
+                    android:layout_alignParentStart="true"
                     android:layout_centerVertical="true"
-                    android:paddingLeft="8dp"
+                    android:paddingStart="8dp"
                     android:text="手机号码"
                     android:textColor="#AAAAAA"
                     android:textSize="16sp" />
-
-                <EditText
-                    android:id="@+id/tv_telname"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_centerVertical="true"
-                    android:layout_toRightOf="@+id/tv_tel"
-                    android:text="什么都未留下"
-                    android:singleLine="true"
-                    android:textColor="#AAAAAA"
-                    android:background="@null"
-                    android:textSize="14sp" />
 
                 <View
                     android:layout_width="match_parent"
@@ -145,30 +147,30 @@
                 android:layout_height="48dp"
                 android:background="#ffffff"
                 android:paddingLeft="12dp"
-                android:paddingRight="12dp" >
+                android:paddingRight="12dp">
+
+                <EditText
+                    android:id="@+id/tv_fakeusername"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_toEndOf="@+id/tv_fakeuser"
+                    android:background="@null"
+                    android:singleLine="true"
+                    android:text=""
+                    android:textColor="#AAAAAA"
+                    android:textSize="14sp" />
 
                 <TextView
                     android:id="@+id/tv_fakeuser"
                     android:layout_width="96dp"
                     android:layout_height="wrap_content"
-                    android:layout_alignParentLeft="true"
+                    android:layout_alignParentStart="true"
                     android:layout_centerVertical="true"
-                    android:paddingLeft="8dp"
+                    android:paddingStart="8dp"
                     android:text="昵称"
                     android:textColor="#AAAAAA"
                     android:textSize="16sp" />
-
-                <EditText
-                    android:id="@+id/tv_fakeusername"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_centerVertical="true"
-                    android:layout_toRightOf="@+id/tv_fakeuser"
-                    android:text="什么都未留下"
-                    android:singleLine="true"
-                    android:textColor="#AAAAAA"
-                    android:background="@null"
-                    android:textSize="14sp" />
 
                 <View
                     android:layout_width="match_parent"
@@ -184,30 +186,29 @@
                 android:background="#ffffff"
                 android:paddingLeft="12dp"
                 android:paddingRight="12dp">
+
+                <EditText
+                    android:id="@+id/tv_sexname"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_toEndOf="@+id/tv_sex"
+                    android:background="@null"
+                    android:singleLine="true"
+                    android:text=""
+                    android:textColor="#AAAAAA"
+                    android:textSize="14sp" />
 
                 <TextView
                     android:id="@+id/tv_sex"
                     android:layout_width="96dp"
                     android:layout_height="wrap_content"
-                    android:layout_alignParentLeft="true"
+                    android:layout_alignParentStart="true"
                     android:layout_centerVertical="true"
-                    android:paddingLeft="8dp"
+                    android:paddingStart="8dp"
                     android:text="性别"
                     android:textColor="#AAAAAA"
                     android:textSize="16sp" />
-
-                <EditText
-                    android:id="@+id/tv_sexname"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_centerVertical="true"
-                    android:layout_toRightOf="@+id/tv_sex"
-                    android:singleLine="true"
-                    android:text="什么都未留下"
-                    android:textColor="#AAAAAA"
-                    android:background="@null"
-                    android:textSize="14sp"
-                    />
 
                 <View
                     android:layout_width="match_parent"
@@ -223,29 +224,29 @@
                 android:paddingLeft="12dp"
                 android:paddingRight="12dp">
 
+                <EditText
+                    android:id="@+id/tv_truename"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_toEndOf="@+id/tv_true"
+                    android:background="@null"
+                    android:singleLine="true"
+                    android:text=""
+                    android:textColor="#AAAAAA"
+                    android:textSize="14sp" />
+
                 <TextView
                     android:id="@+id/tv_true"
                     android:layout_width="96dp"
                     android:layout_height="wrap_content"
-                    android:layout_alignParentLeft="true"
+                    android:layout_alignParentStart="true"
                     android:layout_centerVertical="true"
                     android:paddingLeft="8dp"
                     android:text="姓名"
                     android:textColor="#AAAAAA"
                     android:textSize="16sp" />
 
-                <EditText
-                    android:id="@+id/tv_truename"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_centerVertical="true"
-                    android:layout_toRightOf="@+id/tv_true"
-                    android:singleLine="true"
-                    android:text="什么都未留下"
-                    android:textColor="#AAAAAA"
-                    android:textSize="14sp"
-                    android:background="@null"/>
-
                 <View
                     android:layout_width="match_parent"
                     android:layout_height="0.1dp"
@@ -259,30 +260,29 @@
                 android:background="#ffffff"
                 android:paddingLeft="12dp"
                 android:paddingRight="12dp">
+
+                <EditText
+                    android:id="@+id/tv_addressname"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_toEndOf="@+id/tv_address"
+                    android:background="@null"
+                    android:singleLine="true"
+                    android:text=""
+                    android:textColor="#AAAAAA"
+                    android:textSize="14sp" />
 
                 <TextView
                     android:id="@+id/tv_address"
                     android:layout_width="96dp"
                     android:layout_height="wrap_content"
-                    android:layout_alignParentLeft="true"
+                    android:layout_alignParentStart="true"
                     android:layout_centerVertical="true"
-                    android:paddingLeft="8dp"
+                    android:paddingStart="8dp"
                     android:text="住址"
                     android:textColor="#AAAAAA"
                     android:textSize="16sp" />
-
-                <EditText
-                    android:id="@+id/tv_addressname"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_centerVertical="true"
-                    android:layout_toRightOf="@+id/tv_address"
-                    android:singleLine="true"
-                    android:text="什么都未留下"
-                    android:background="@null"
-                    android:textColor="#AAAAAA"
-                    android:textSize="14sp"
-                    />
 
                 <View
                     android:layout_width="match_parent"
@@ -297,18 +297,6 @@
                 android:background="#ffffff"
                 android:paddingLeft="12dp"
                 android:paddingRight="12dp">
-
-                <TextView
-                    android:id="@+id/tv_birth"
-                    android:layout_width="96dp"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentLeft="true"
-                    android:layout_centerVertical="true"
-                    android:paddingLeft="8dp"
-                    android:text="生日"
-                    android:textColor="#AAAAAA"
-                    android:textSize="16sp" />
-
 
                 <EditText
                     android:id="@+id/tv_yearname"
@@ -322,16 +310,6 @@
 
                     android:textColor="#AAAAAA"
                     android:textSize="14sp" />
-                <TextView
-                    android:id="@+id/tv_year"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_toRightOf="@+id/tv_yearname"
-                    android:layout_centerVertical="true"
-                    android:singleLine="true"
-                    android:text="年"
-                    android:textColor="#AAAAAA"
-                    android:textSize="14sp" />
 
 
                 <EditText
@@ -340,20 +318,10 @@
                     android:layout_height="wrap_content"
                     android:layout_centerVertical="true"
                     android:layout_toRightOf="@+id/tv_year"
+                    android:gravity="center"
+                    android:maxLength="2"
                     android:singleLine="true"
                     android:text=""
-                    android:maxLength="2"
-                    android:gravity="center"
-                    android:textColor="#AAAAAA"
-                    android:textSize="14sp" />
-                <TextView
-                    android:id="@+id/tv_month"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_toRightOf="@+id/tv_monthname"
-                    android:layout_centerVertical="true"
-                    android:singleLine="true"
-                    android:text="月"
                     android:textColor="#AAAAAA"
                     android:textSize="14sp" />
 
@@ -363,20 +331,55 @@
                     android:layout_height="wrap_content"
                     android:layout_centerVertical="true"
                     android:layout_toRightOf="@+id/tv_month"
+                    android:gravity="center"
+                    android:maxLength="2"
                     android:singleLine="true"
                     android:text=""
-                    android:maxLength="2"
-                    android:gravity="center"
                     android:textColor="#AAAAAA"
                     android:textSize="14sp"
 
                     />
+
+
+                <TextView
+                    android:id="@+id/tv_birth"
+                    android:layout_width="96dp"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentLeft="true"
+                    android:layout_centerVertical="true"
+                    android:paddingLeft="8dp"
+                    android:text="生日"
+                    android:textColor="#AAAAAA"
+                    android:textSize="16sp" />
+
+                <TextView
+                    android:id="@+id/tv_month"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_toRightOf="@+id/tv_monthname"
+                    android:singleLine="true"
+                    android:text="月"
+                    android:textColor="#AAAAAA"
+                    android:textSize="14sp" />
+
+                <TextView
+                    android:id="@+id/tv_year"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_toRightOf="@+id/tv_yearname"
+                    android:singleLine="true"
+                    android:text="年"
+                    android:textColor="#AAAAAA"
+                    android:textSize="14sp" />
+
                 <TextView
                     android:id="@+id/tv_day"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_toRightOf="@+id/tv_dayname"
                     android:layout_centerVertical="true"
+                    android:layout_toRightOf="@+id/tv_dayname"
                     android:singleLine="true"
                     android:text="日"
                     android:textColor="#AAAAAA"
@@ -395,21 +398,46 @@
                 android:layout_width="match_parent"
                 android:layout_height="60dp"
                 android:layout_marginLeft="10dp"
-                android:layout_marginRight="10dp"
                 android:layout_marginTop="32dp"
+                android:layout_marginRight="10dp"
                 android:background="@android:color/holo_red_light"
-                android:paddingBottom="7dp"
+                android:backgroundTint="@android:color/holo_red_light"
                 android:paddingTop="7dp"
-                android:text="修改"
+                android:paddingBottom="7dp"
+                android:text="修改个人信息"
                 android:textColor="@android:color/white"
-                android:textSize="18sp"
-                android:backgroundTint="@android:color/holo_red_light"/>
+                android:textSize="18sp" />
 
-
-
-
+            <Button
+                android:id="@+id/btn_tospace"
+                android:layout_width="match_parent"
+                android:layout_height="60dp"
+                android:layout_marginLeft="10dp"
+                android:layout_marginTop="32dp"
+                android:layout_marginBottom="60dp"
+                android:layout_marginRight="10dp"
+                android:background="@android:color/holo_red_light"
+                android:backgroundTint="@android:color/holo_red_light"
+                android:paddingTop="7dp"
+                android:paddingBottom="7dp"
+                android:text="进入个人空间"
+                android:textColor="@android:color/white"
+                android:textSize="18sp" />
         </LinearLayout>
 
     </ScrollView>
 
-</LinearLayout>
+
+    <ProgressBar
+        android:id="@+id/userProgress"
+        style="?android:attr/progressBarStyle"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:layout_gravity="center"
+        android:indeterminateDrawable="@drawable/progressbar"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+</androidx.constraintlayout.widget.ConstraintLayout>

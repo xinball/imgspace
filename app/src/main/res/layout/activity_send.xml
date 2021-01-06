@@ -86,8 +86,10 @@
             <EditText
                 android:id="@+id/editText1"
                 android:layout_width="fill_parent"
-                android:layout_height="120dp"
-                android:layout_margin="12dp"
+                android:layout_height="wrap_content"
+                android:minHeight="120dp"
+                android:layout_margin="10dp"
+                android:padding="10dp"
                 android:background="#CCFFFFFF"
                 android:gravity="top"
                 android:hint="请输入您要分享的文字"
@@ -115,7 +117,7 @@
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:gravity="center"
-                android:text="(友情提示:只能添加9张图片,长按图片可以删除已添加图片)" />
+                android:text="只能添加9张图片,长按图片可删除图片)" />
         </LinearLayout>
 
     </RelativeLayout>

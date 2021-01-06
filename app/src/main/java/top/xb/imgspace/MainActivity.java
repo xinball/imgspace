@@ -38,6 +38,11 @@ import java.net.URI;
 
 import top.xb.imgspace.config.APIAddress;
 import top.xb.imgspace.ui.home.HomeFragment;
+import top.xb.imgspace.utils.DownloadUtil;
+import top.xb.imgspace.utils.HTTPSTrustManager;
+import top.xb.imgspace.utils.HttpUtil;
+
+import static top.xb.imgspace.application.ImgSpaceApplication.allowAllSSL;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -64,6 +69,8 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        allowAllSSL();
+        HTTPSTrustManager.allowAllSSL();//信任所有证书
         nav_title=findViewById(R.id.nav_title);
         nav_name=findViewById(R.id.nav_name);;
         nav_avatar=findViewById(R.id.nav_avatar);
@@ -264,10 +271,6 @@ public class MainActivity extends AppCompatActivity {
         list();
         mode=MODE.LIST;
         sendBroadcast(new Intent("ListRefresh"));
-    }
-    public void get(View view){
-        Log.i("get","哈哈哈");
-        startActivity(new Intent(this, SpaceActivity.class));
     }
     /**
      * 根据Uri获取图片绝对路径，解决Android4.4以上版本Uri转换

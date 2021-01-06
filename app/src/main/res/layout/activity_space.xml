@@ -14,6 +14,22 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
+        <Button
+            android:id="@+id/space_refresh"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:background="#00FFFFFF"
+            android:onClick="spaceRefresh"
+            android:backgroundTint="#00FFFFFF"
+            android:padding="10dp"
+            app:icon="@android:drawable/ic_menu_rotate"
+            app:iconTint="#000000"
+            android:layout_marginTop="10dp"
+            android:layout_marginStart="10dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+
         <ImageView
             android:id="@+id/space_banner"
             android:layout_width="match_parent"
@@ -53,6 +69,20 @@
             android:textColor="#000000"
             android:textSize="28sp" />
 
+        <EditText
+            android:id="@+id/spacekey"
+            android:layout_marginStart="10dp"
+            android:layout_marginTop="10dp"
+            android:layout_toEndOf="@id/space_refresh"
+            android:hint="请输入关键词进行搜索"
+            android:inputType="text"
+            android:padding="10dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:ems="10"
+            android:text="" />
+
+
     </RelativeLayout>
 
 
@@ -69,17 +99,4 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <Button
-        android:id="@+id/space_refresh"
-        android:layout_width="50dp"
-        android:layout_height="50dp"
-        android:background="#00FFFFFF"
-        android:backgroundTint="#00FFFFFF"
-        android:padding="10dp"
-        app:icon="@android:drawable/ic_menu_rotate"
-        app:iconTint="#000000"
-        android:layout_marginTop="10dp"
-        android:layout_marginStart="10dp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
 </androidx.constraintlayout.widget.ConstraintLayout>

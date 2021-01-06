@@ -60,11 +60,11 @@
         <activity
             android:name=".Rotate"
             android:screenOrientation="portrait" />
-
         <service
             android:name=".service.PushService"
             android:exported="false" />
     </application>
+
     <permission
         android:name="sendOK"
         android:protectionLevel="signature" />

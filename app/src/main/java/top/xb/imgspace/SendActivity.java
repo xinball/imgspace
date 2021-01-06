@@ -36,6 +36,7 @@ import android.widget.ScrollView;
 import android.widget.SimpleAdapter;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
 import com.google.android.material.snackbar.Snackbar;
 
 import com.alibaba.fastjson.JSON;
@@ -115,16 +116,6 @@ public class SendActivity extends AppCompatActivity {
         buttonPublish = (Button)findViewById(R.id.send_btn1);
         buttonCancel = (Button)findViewById(R.id.send_btn2);
 
-        buttonPublish.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                List<String> filesStr = new ArrayList<>();
-                filesStr.add("/storage/emulated/0/Pictures/Screenshots/1.PNG");
-                uploadMsgTask=new UploadMsgTask("pelwdq", "12356", "哈哈哈", filesStr);
-                DisplayUtil.showProgress(getApplicationContext(),sendProgressView,sendView,true);
-                uploadMsgTask.execute();
-            }
-        });
         /*
          * 载入默认图片添加图片加号
          * 通过适配器实现
@@ -155,6 +146,10 @@ public class SendActivity extends AppCompatActivity {
             public boolean setViewValue(View view, Object data,
                                         String textRepresentation) {
                 // TODO Auto-generated method stub
+                /*if(view instanceof ImageView && data instanceof String){
+                    Glide.with(getApplicationContext()).load(data).into((ImageView) view);
+                    return true;
+                }*/
                 if(view instanceof ImageView && data instanceof Bitmap){
                     ImageView i = (ImageView)view;
                     i.setImageBitmap((Bitmap) data);
@@ -183,8 +178,7 @@ public class SendActivity extends AppCompatActivity {
                 else if(position == 0) { //点击图片位置为+ 0对应0张图片
                     Toast.makeText(SendActivity.this, "添加图片", Toast.LENGTH_SHORT).show();
                     //选择图片
-                    Intent intent = new Intent(Intent.ACTION_PICK,
-                            android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+                    Intent intent = new Intent(Intent.ACTION_PICK,android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
                     startActivityForResult(intent, IMAGE_OPEN);
                     //通过onResume()刷新数据
                 }
@@ -196,8 +190,6 @@ public class SendActivity extends AppCompatActivity {
             }
         });
 
-
-
         buttonPublish.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -205,10 +197,28 @@ public class SendActivity extends AppCompatActivity {
                 String myEdit = myEditText.getText().toString().trim();
                 if(TextUtils.isEmpty(myEdit)){
                     Toast.makeText(SendActivity.this, "文字为空", Toast.LENGTH_SHORT).show();
+                }else {
                     /*
                     调用发送函数
 
                     */
+
+                    List<String> filesStr = new ArrayList<>();
+
+                    for(int i=1;i<imageItem.size();i++){
+                        filesStr.add((String) imageItem.get(i).get("file"));
+                    }
+                    if(ImgSpaceApplication.isLoggedIn()){
+                        String uid=ImgSpaceApplication.getUid();
+                        String pwd=ImgSpaceApplication.getPwd();
+                        uploadMsgTask=new UploadMsgTask(uid, pwd, myEdit, filesStr);
+                        DisplayUtil.showProgress(getApplicationContext(),sendProgressView,sendView,true);
+                        uploadMsgTask.execute();
+                    }else{
+                        Toast.makeText(SendActivity.this, "未登录！", Toast.LENGTH_SHORT).show();
+                        startActivity(new Intent(getApplicationContext(),LoginActivity.class));
+                        finish();
+                    }
                 }
             }
         });
@@ -259,6 +269,7 @@ public class SendActivity extends AppCompatActivity {
             Bitmap addbmp= BitmapFactory.decodeFile(pathImage);
             HashMap<String, Object> map = new HashMap<String, Object>();
             map.put("itemImage", addbmp);
+            map.put("file", pathImage);
             imageItem.add(map);
             simpleAdapter = new SimpleAdapter(this,
                     imageItem, R.layout.griditem_addpic,
@@ -340,15 +351,18 @@ public class SendActivity extends AppCompatActivity {
                 try {
                     Log.v("JSON", result.toString());
                     if (result.getIntValue("return") == 1) {
-                        SharedPreferences.Editor editor = ImgSpaceApplication.msgInfo.edit();
-                        editor.putInt("num",files.size());
-                        editor.putString("content",message);
-                        editor.apply();
-                        //发送广播刷新
-                        Intent intent = new Intent();
-                        intent.setAction("sendOK");
-                        sendBroadcast(intent);
-                        //finish();
+                        String returnmsg=result.getString("returnmsg");
+                        AlertDialog.Builder builder=DisplayUtil.dialogExcute(SendActivity.this,returnmsg,false,"发送成功");
+                        builder.setPositiveButton("好", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int which) {
+                                Intent intent=new Intent(SendActivity.this,SpaceActivity.class);
+                                intent.putExtra("uid",uid);
+                                startActivity(intent);
+                                finish();
+                            }
+                        });
+                        builder.show();
                     } else {
                         //Toast.makeText(getApplicationContext(), result.getString("returnmsg"), Toast.LENGTH_SHORT).show();
                         Snackbar.make(sendView, result.getString("returnmsg"), Snackbar.LENGTH_LONG).setAction("Action", null).show();

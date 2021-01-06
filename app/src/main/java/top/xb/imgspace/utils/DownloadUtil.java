@@ -14,20 +14,29 @@ import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
+import javax.net.ssl.HttpsURLConnection;
+
+import top.xb.imgspace.application.ImgSpaceApplication;
+
+import static top.xb.imgspace.utils.HttpUtil.getSSLContext;
+
 public class DownloadUtil {
+    private Context context;
     /**
      * 获取网络图片
      *
      * @param imageurl 图片网络地址
      * @return Bitmap 返回位图
      */
-    public static Bitmap GetImageInputStream(String imageurl) {
+    public static Bitmap GetImageInputStream(Context context,String imageurl) {
         URL url;
-        HttpURLConnection connection = null;
+        HttpsURLConnection connection = null;
         Bitmap bitmap = null;
         try {
             url = new URL(imageurl);
-            connection = (HttpURLConnection) url.openConnection();
+            ImgSpaceApplication.allowAllSSL();
+            connection = (HttpsURLConnection) url.openConnection();
+            connection.setSSLSocketFactory(getSSLContext(context).getSocketFactory());
             connection.setConnectTimeout(6000); //超时设置
             connection.setDoInput(true);
             connection.setUseCaches(false); //设置不使用缓存
@@ -59,8 +68,10 @@ public class DownloadUtil {
                 fileOutputStream = new FileOutputStream(pathDir + "/" + imageName);
                 if(imageName.endsWith(".png"))
                     bitmap.compress(Bitmap.CompressFormat.PNG, 100, fileOutputStream);
-                if(imageName.endsWith(".jpg")||imageName.endsWith(".jpeg"))
+                else if(imageName.endsWith(".jpg")||imageName.endsWith(".jpeg"))
                     bitmap.compress(Bitmap.CompressFormat.JPEG, 100, fileOutputStream);
+                else
+                    bitmap.compress(Bitmap.CompressFormat.PNG, 100, fileOutputStream);
                 fileOutputStream.close();
                 //ToastUtil.showText(context,toastMsg,Toast.LENGTH_SHORT);
                 Toast.makeText(context,toastMsg,Toast.LENGTH_SHORT).show();
@@ -109,7 +120,7 @@ public class DownloadUtil {
         }
 
         protected Bitmap doInBackground(String... params) {
-            bitmap = GetImageInputStream(url);
+            bitmap = GetImageInputStream(mContext,url);
             return bitmap;
         }
 

@@ -1,29 +1,45 @@
 package top.xb.imgspace.adapter;
 
 import android.annotation.SuppressLint;
+import android.content.ClipData;
+import android.content.ClipboardManager;
 import android.content.Context;
+import android.content.Intent;
+import android.os.AsyncTask;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.EditText;
 import android.widget.GridView;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.appcompat.app.AlertDialog;
+
+import com.alibaba.fastjson.JSONObject;
+import com.google.android.material.snackbar.Snackbar;
 
 import java.util.Date;
 import java.util.List;
 
 import top.xb.imgspace.R;
+import top.xb.imgspace.RealPicture;
+import top.xb.imgspace.application.ImgSpaceApplication;
 import top.xb.imgspace.bean.Message;
 import top.xb.imgspace.bean.Photo;
 import top.xb.imgspace.utils.DisplayUtil;
+import top.xb.imgspace.utils.HttpUtil;
 
 public class MyListAdapter extends BaseAdapter {
-    private List<Message> messages;
+    private List<Message> messages=null;
     private LayoutInflater inflater;
     private final Context context;
-    private List<List<Photo>> photoslist;
+    private List<List<Photo>> photoslist=null;
+
+    DeletemsgTask deletemsgTask;
+    EditmsgTask editmsgTask;
 
     private static final String TAG = "ListAdapter";
     private MyGridAdapter gridAdapter;
@@ -36,12 +52,18 @@ public class MyListAdapter extends BaseAdapter {
     }
     @Override
     public int getCount() {
-        return messages.size();
+        if(messages!=null)
+            return messages.size();
+        else
+            return 0;
     }
 
     @Override
     public Message getItem(int position) {
-        return messages.get(position);
+        if(messages!=null)
+            return messages.get(position);
+        else
+            return null;
     }
 
     @Override
@@ -84,6 +106,64 @@ public class MyListAdapter extends BaseAdapter {
         holder.userspace_content.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View view) {
+                //显示对话框
+                AlertDialog.Builder builder = new AlertDialog.Builder(context);
+                final AlertDialog dialog = builder.create();
+                View dia = View.inflate(context, R.layout.dialog_content, null);
+                dialog.setView(dia);
+
+                TextView content_copy = (TextView) dia.findViewById(R.id.content_copy);
+                TextView content_edit = (TextView) dia.findViewById(R.id.content_edit);
+                TextView content_delete = (TextView) dia.findViewById(R.id.content_delete);
+                content_copy.setOnClickListener(new View.OnClickListener() {//
+                    @Override
+                    public void onClick(View v) {
+                        ClipboardManager clipboardManager=(ClipboardManager)context.getSystemService(Context.CLIPBOARD_SERVICE);
+                        ClipData clipData=ClipData.newPlainText("Label",messages.get(position).content);
+                        clipboardManager.setPrimaryClip(clipData);
+                        Toast.makeText(context,"复制文本成功！",Toast.LENGTH_SHORT).show();
+                        dialog.dismiss();
+                    }
+                });
+                if(messages.get(position).uid.equals(ImgSpaceApplication.getUid())){
+                    content_edit.setOnClickListener(new View.OnClickListener() {//
+                        @Override
+                        public void onClick(View v) {
+                            dialog.dismiss();
+                            AlertDialog.Builder builder = new AlertDialog.Builder(context);
+                            final AlertDialog dialog = builder.create();
+                            View dia = View.inflate(context, R.layout.dialog_edit, null);
+                            dialog.setView(dia);
+                            EditText edit_content = (EditText) dia.findViewById(R.id.edit_content);
+                            edit_content.setText(messages.get(position).content);
+                            TextView edit_sure = (TextView) dia.findViewById(R.id.edit_sure);
+                            edit_sure.setOnClickListener(new View.OnClickListener() {//
+                                @Override
+                                public void onClick(View v) {
+                                    String content=edit_content.getText().toString().trim();
+                                    Message message=messages.get(position);
+                                    editmsgTask=new EditmsgTask(message.uid,ImgSpaceApplication.getPwd(),message.mid,content);
+                                    editmsgTask.execute();
+                                    dialog.dismiss();
+                                }
+                            });
+                            builder.show();
+                        }
+                    });
+                    content_delete.setOnClickListener(new View.OnClickListener() {//
+                        @Override
+                        public void onClick(View v) {
+                            Message message=messages.get(position);
+                            deletemsgTask=new DeletemsgTask(message.uid,ImgSpaceApplication.getPwd(),message.mid);
+                            deletemsgTask.execute();
+                            dialog.dismiss();
+                        }
+                    });
+                }else{
+                    content_delete.setVisibility(View.INVISIBLE);
+                    content_edit.setVisibility(View.INVISIBLE);
+                }
+                dialog.show();
                 return false;
             }
         });
@@ -103,4 +183,113 @@ public class MyListAdapter extends BaseAdapter {
         TextView userspace_altertime;
         GridView userspace_photogrid;
     }
+
+
+
+    @SuppressLint("StaticFieldLeak")
+    public class DeletemsgTask extends AsyncTask<Void, Void, JSONObject> {
+
+        private String SendData = "";
+        private String uid="";
+        private String pwd="";
+        private String mid="";
+
+        DeletemsgTask(String uid, String pwd ,String mid) {
+            this.uid=uid;
+            this.pwd=pwd;
+            this.mid=mid;
+            SendData="{\"action\":\"send\",\"method\":\"deletemsg\",\"uid\":\""+uid+"\",\"pwd\":\""+pwd+"\",\"mid\":\""+mid+"\"}";
+        }
+        @Override
+        protected JSONObject doInBackground(Void... params) {
+            return HttpUtil.postRequest(context, SendData,null);
+        }
+
+        @Override
+        protected void onPostExecute(JSONObject result) {
+            deletemsgTask = null;
+            //DisplayUtil.showProgress(context,deleteProgress,null,false);
+            if(result !=null) {
+                try {
+                    Log.v("JSON", result.toString());
+                    if (result.getIntValue("return") == 1) {
+                        Toast.makeText(context,"消息删除成功！", Toast.LENGTH_SHORT).show();
+                        //发送广播
+                        Intent intent = new Intent();
+                        intent.setAction("SpaceRefresh");
+                        context.sendBroadcast(intent);
+                    } else {
+                        String returnmsg=result.getString("returnmsg");
+                        DisplayUtil.dialogProcess(context,returnmsg,true,"删除消息失败","确定",null);
+                        //Toast.makeText(RegActivity.this, result.getString("returnmsg"), Toast.LENGTH_SHORT).show();
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }else{
+                //Snackbar.make(real_bottomtitle, R.string.service_error, Snackbar.LENGTH_LONG).setAction("Action", null).show();
+            }
+        }
+        @Override
+        protected void onCancelled() {
+            deletemsgTask = null;
+            //DisplayUtil.showProgress(context,null,null,false);
+        }
+    }
+
+
+    @SuppressLint("StaticFieldLeak")
+    public class EditmsgTask extends AsyncTask<Void, Void, JSONObject> {
+
+        private String SendData = "";
+        private String uid="";
+        private String pwd="";
+        private String mid="";
+        private String message="";
+
+        EditmsgTask(String uid, String pwd ,String mid,String message) {
+            this.uid=uid;
+            this.pwd=pwd;
+            this.mid=mid;
+            this.message=message;
+            SendData="{\"action\":\"send\",\"method\":\"altermsg\",\"uid\":\""+uid+"\",\"pwd\":\""+pwd+"\",\"mid\":\""+mid+"\",\"message\":\""+message+"\"}";
+        }
+        @Override
+        protected JSONObject doInBackground(Void... params) {
+            return HttpUtil.postRequest(context, SendData,null);
+        }
+
+        @Override
+        protected void onPostExecute(JSONObject result) {
+            editmsgTask = null;
+            //DisplayUtil.showProgress(context,deleteProgress,null,false);
+            if(result !=null) {
+                try {
+                    Log.v("JSON", result.toString());
+                    if (result.getIntValue("return") == 1) {
+                        Toast.makeText(context,"消息内容修改成功！", Toast.LENGTH_SHORT).show();
+                        //发送广播
+                        Intent intent = new Intent();
+                        intent.setAction("SpaceRefresh");
+                        context.sendBroadcast(intent);
+                    } else {
+                        String returnmsg=result.getString("returnmsg");
+                        DisplayUtil.dialogProcess(context,returnmsg,true,"消息内容修改失败","确定",null);
+                        //Toast.makeText(RegActivity.this, result.getString("returnmsg"), Toast.LENGTH_SHORT).show();
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }else{
+                //Snackbar.make(real_bottomtitle, R.string.service_error, Snackbar.LENGTH_LONG).setAction("Action", null).show();
+            }
+        }
+        @Override
+        protected void onCancelled() {
+            editmsgTask = null;
+            //DisplayUtil.showProgress(context,null,null,false);
+        }
+    }
+
+
 }

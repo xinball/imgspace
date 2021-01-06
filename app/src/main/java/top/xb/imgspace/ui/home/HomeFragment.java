@@ -92,6 +92,8 @@ public class HomeFragment extends Fragment {
                 //Toast.makeText(mainActivity,"send ok!", Toast.LENGTH_SHORT).show();
                 mainActivity.pic();
                 pic();
+                gv= (GridView) picView;
+                gv.setNumColumns(picCol);
                 picTask = new PicTask(root,picCol);
                 DisplayUtil.showProgress(mainActivity,homeProgress,main_head,true);
                 picTask.execute();
@@ -111,6 +113,8 @@ public class HomeFragment extends Fragment {
                 }else if(MainActivity.mode== MainActivity.MODE.PIC){
                     mainActivity.pic();
                     pic();
+                    gv= (GridView) picView;
+                    gv.setNumColumns(picCol);
                     picTask = new PicTask(root,picCol);
                     DisplayUtil.showProgress(mainActivity,homeProgress,main_head,true);
                     picTask.execute();
@@ -120,14 +124,14 @@ public class HomeFragment extends Fragment {
     };
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         mainActivity.setNavText(getString(R.string.title_home));
-
+        root = inflater.inflate(R.layout.fragment_home, container, false);
         navController=Navigation.findNavController(mainActivity, R.id.nav_host_fragment);
         AuthUtil.verifyPermissions(mainActivity);
-        root = inflater.inflate(R.layout.fragment_home, container, false);
 
         pathEdit=root.findViewById(R.id.pathEdit);
         pathEdit.setText(rootPath.getPath());
         picView=root.findViewById(R.id.PicView);
+        gv= (GridView) picView;
         listView=root.findViewById(R.id.ListView);
         main_head=mainActivity.findViewById(R.id.main_head);
         homeProgress=root.findViewById(R.id.homeProgress);
@@ -145,6 +149,7 @@ public class HomeFragment extends Fragment {
         }else{
             mainActivity.pic();
             pic();
+            gv.setNumColumns(picCol);
             MainActivity.mode = MainActivity.MODE.PIC;
             picTask = new PicTask(root,picCol);
             DisplayUtil.showProgress(mainActivity,homeProgress,main_head,true);
@@ -290,9 +295,6 @@ public class HomeFragment extends Fragment {
         }
         @Override
         protected Void doInBackground(Void... params) {
-            gv=root.findViewById(R.id.PicView);
-            gv.setNumColumns(picCol);
-
             data=getListData();
             /*try {
                 data=getPicData(330,330);

@@ -35,6 +35,7 @@
             android:id="@+id/nav_avatar"
             android:layout_width="32dp"
             android:layout_height="32dp"
+            android:padding="1dp"
             android:src="@color/white"
             android:visibility="visible"
             app:layout_constraintLeft_toLeftOf="parent"
@@ -49,8 +50,7 @@
             android:textColor="@color/white"
             android:textSize="18sp"
             android:visibility="visible"
-            android:layout_marginStart="20dp"
-            android:layout_marginLeft="20dp"
+            android:layout_marginStart="30dp"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 

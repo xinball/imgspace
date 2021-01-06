@@ -13,6 +13,7 @@ import android.graphics.Matrix;
 import android.graphics.PointF;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Environment;
 import android.util.Log;
 import android.view.Display;
 import android.view.Gravity;
@@ -34,6 +35,7 @@ import java.util.ArrayList;
 import top.xb.imgspace.adapter.MyPagerAdapter;
 import top.xb.imgspace.application.ImgSpaceApplication;
 import top.xb.imgspace.bean.Photo;
+import top.xb.imgspace.config.APIAddress;
 import top.xb.imgspace.utils.DisplayUtil;
 import top.xb.imgspace.utils.HttpUtil;
 
@@ -103,7 +105,16 @@ public class RealPicture extends AppCompatActivity {
 
     //菜单按钮的点击函数
     public void menu(View view){
-        Toast.makeText(RealPicture.this,"你点击了菜单按钮",Toast.LENGTH_SHORT).show();
+        if(local){
+            String path=(String) myPagerAdapter.getPrimaryItem();
+            DisplayUtil.adialogProcess(getApplicationContext(),"图片位置为："+ path,true,"图片信息","好！",null);
+        }else{
+            Photo photo=(Photo) myPagerAdapter.getPrimaryItem();
+            DisplayUtil.adialogProcess(getApplicationContext(),"网络路径为："+ APIAddress.WEB_IMG_URL+photo.url+
+                    "\n本地保存位置为："+ Environment.getExternalStorageDirectory()+APIAddress.WebcachePath+photo.uid+"\n上传时间为："+DisplayUtil.dateFormat.format(photo.uploadTime),
+                    true,"图片信息","好！",null);
+        }
+        //Toast.makeText(RealPicture.this,"你点击了菜单按钮",Toast.LENGTH_SHORT).show();
     }
     //编辑按钮的点击函数
     public void edit(View view){
