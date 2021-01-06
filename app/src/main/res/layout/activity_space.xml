@@ -1,13 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-xmlns:app="http://schemas.android.com/apk/res-auto"
-xmlns:tools="http://schemas.android.com/tools"
-android:layout_width="match_parent"
-android:layout_height="match_parent"
-android:visibility="visible"
-tools:visibility="visible"
-tools:context=".UserspaceActivity">
-
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".SpaceActivity">
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -18,7 +15,7 @@ tools:context=".UserspaceActivity">
         app:layout_constraintTop_toTopOf="parent">
 
         <ImageView
-            android:id="@+id/userspace_banner"
+            android:id="@+id/space_banner"
             android:layout_width="match_parent"
             android:layout_height="100dp"
             android:adjustViewBounds="true"
@@ -26,10 +23,10 @@ tools:context=".UserspaceActivity">
             android:scaleType="centerCrop" />
 
         <ImageView
-            android:id="@+id/userspace_headPhoto"
+            android:id="@+id/space_headPhoto"
             android:layout_width="60dp"
             android:layout_height="60dp"
-            android:layout_below="@id/userspace_banner"
+            android:layout_below="@id/space_banner"
             android:layout_alignParentRight="true"
             android:layout_marginTop="-40dp"
             android:layout_marginEnd="30dp"
@@ -38,20 +35,20 @@ tools:context=".UserspaceActivity">
             android:src="@drawable/imgspace" />
 
         <ListView
-            android:id="@+id/userspace_message"
+            android:id="@+id/space_message"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@id/userspace_banner"
+            android:layout_below="@id/space_banner"
             android:layout_marginTop="1dp" />
 
         <TextView
-            android:id="@+id/userspace_name"
+            android:id="@+id/space_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@id/userspace_banner"
+            android:layout_below="@id/space_banner"
             android:layout_marginTop="-40dp"
             android:layout_marginEnd="10dp"
-            android:layout_toStartOf="@id/userspace_headPhoto"
+            android:layout_toStartOf="@id/space_headPhoto"
             android:text="gtr"
             android:textColor="#000000"
             android:textSize="28sp" />
@@ -60,7 +57,7 @@ tools:context=".UserspaceActivity">
 
 
     <ProgressBar
-        android:id="@+id/userspaceProgress"
+        android:id="@+id/spaceProgress"
         style="?android:attr/progressBarStyle"
         android:layout_width="60dp"
         android:layout_height="60dp"
@@ -73,7 +70,7 @@ tools:context=".UserspaceActivity">
         app:layout_constraintTop_toTopOf="parent" />
 
     <Button
-        android:id="@+id/userspace_refresh"
+        android:id="@+id/space_refresh"
         android:layout_width="50dp"
         android:layout_height="50dp"
         android:background="#00FFFFFF"

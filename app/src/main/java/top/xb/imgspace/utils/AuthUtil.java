@@ -7,7 +7,7 @@ import androidx.core.app.ActivityCompat;
 
 public class AuthUtil {
     private static final int REQUEST = 1;
-    private static final String[] PERMISSIONS = {"android.permission.READ_EXTERNAL_STORAGE","android.permission.WRITE_EXTERNAL_STORAGE","android.permission.CAMERA" };
+    private static final String[] PERMISSIONS = {"android.permission.READ_EXTERNAL_STORAGE","android.permission.WRITE_EXTERNAL_STORAGE","android.permission.CAMERA","android.permission.INTERNET","android.permission.MOUNT_UNMOUNT_FILESYSTEMS"};
     public static void verifyPermissions(Activity activity) {
         try {
             //检测是否有写的权限

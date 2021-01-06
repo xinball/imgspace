@@ -11,6 +11,7 @@ import android.widget.GridView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.util.Date;
 import java.util.List;
 
 import top.xb.imgspace.R;
@@ -69,17 +70,27 @@ public class MyListAdapter extends BaseAdapter {
         }
         holder.userspace_Day.setText(DisplayUtil.dayFormat.format(messages.get(position).sendTime));
         holder.userspace_Year.setText(DisplayUtil.yearFormat.format(messages.get(position).sendTime));
-        holder.userspace_time.setText(DisplayUtil.timeFormat.format(messages.get(position).sendTime));
-        holder.userspace_altertime.setText(DisplayUtil.AllFormat.format(messages.get(position).alterTime));
+        holder.userspace_time.setText("发布:"+DisplayUtil.timeFormat.format(messages.get(position).sendTime));
+        Date alterTime=messages.get(position).alterTime;
+        if(alterTime!=null)
+            holder.userspace_altertime.setText("修改:"+DisplayUtil.AllFormat.format(alterTime));
+        else
+            holder.userspace_altertime.setText("");
         holder.userspace_content.setText(messages.get(position).content);
         if(holder.userspace_photogrid!=null){
             gridAdapter=new MyGridAdapter(photoslist.get(position),context,position);
             holder.userspace_photogrid.setAdapter(gridAdapter);
         }
+        holder.userspace_content.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View view) {
+                return false;
+            }
+        });
         holder.userspace_content.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(context,"content clicked"+position,Toast.LENGTH_SHORT).show();
+                //Toast.makeText(context,"content clicked"+position,Toast.LENGTH_SHORT).show();
             }
         });
         return convertView;

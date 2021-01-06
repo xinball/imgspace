@@ -227,4 +227,10 @@ public class LoginActivity extends AppCompatActivity {
             DisplayUtil.showProgress(LoginActivity.this,loginProgressView,loginView,false);
         }
     }
+
+
+    /*@Override
+    public void onBackPressed() {
+        //super.onBackPressed();'
+    }*/
 }

@@ -3,8 +3,10 @@ package top.xb.imgspace;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.annotation.SuppressLint;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
+import android.content.IntentFilter;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
@@ -18,14 +20,11 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.google.android.material.snackbar.Snackbar;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.Locale;
 
-import top.xb.imgspace.adapter.MyListAdapter;
-import top.xb.imgspace.application.ImgSpaceApplication;
+import top.xb.imgspace.adapter.SpaceListAdapter;
 import top.xb.imgspace.bean.Message;
 import top.xb.imgspace.bean.Photo;
 import top.xb.imgspace.bean.User;
@@ -34,62 +33,84 @@ import top.xb.imgspace.utils.AuthUtil;
 import top.xb.imgspace.utils.DisplayUtil;
 import top.xb.imgspace.utils.HttpUtil;
 
-public class UserspaceActivity extends AppCompatActivity {
+public class SpaceActivity extends AppCompatActivity {
     private static final String TAG = "UserspaceActivity";
 
     private ProgressBar spaceProgressView;
     private View spaceView;
-    private UserspaceTask userspaceTask;
+    private SpaceTask spaceTask;
+    IntentFilter intentFilter;
+
+    private final BroadcastReceiver SpaceReceiver = new BroadcastReceiver(){
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            String action=intent.getAction();
+            if(action.equals("SpaceRefresh")){
+                String key=intent.getStringExtra("key");
+                if(key!=null&&key.equals(""))
+                    key=null;
+                //Toast.makeText(mainActivity,"send ok!", Toast.LENGTH_SHORT).show();
+                spaceTask = new SpaceTask(key);
+                DisplayUtil.showProgress(context,null,null,true);
+                spaceTask.execute();
+            }
+        }
+    };
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         AuthUtil.verifyPermissions(this);
-        setContentView(R.layout.activity_userspace);
-        spaceProgressView=findViewById(R.id.userspaceProgress);
+        setContentView(R.layout.activity_space);
+        intentFilter=new IntentFilter();
+        intentFilter.addAction("SpaceRefresh");
+        registerReceiver(SpaceReceiver,intentFilter);
+        spaceProgressView=findViewById(R.id.spaceProgress);
         spaceView=findViewById(R.id.userspace_refresh);
-        userspaceTask=new UserspaceTask("pelwdq",null);
-        userspaceTask.execute();
+        spaceTask=new SpaceTask(null);
+        spaceTask.execute();
     }
 
 
     @SuppressLint("StaticFieldLeak")
-    public class UserspaceTask extends AsyncTask<Void, Void, JSONObject> {
+    public class SpaceTask extends AsyncTask<Void, Void, JSONObject> {
 
         private String SendData = "";
-        private String uid="";
         private String key="";
 
-        List<Message> messages=new ArrayList<>();;
+        List<Message> messages=new ArrayList<>();
         List<List<Photo>> photoslist= new ArrayList<>();
+        List<String> names=new ArrayList<>();
+        List<String> avatars=new ArrayList<>();
 
-        UserspaceTask(String uid, String key) {
-            this.uid=uid;
+        SpaceTask(String key) {
             if(key!=null){
                 this.key=key;
-                SendData="{\"action\":\"receive\",\"method\":\"uidkeymsg\",\"uid\":\""+uid+"\",\"key\":\""+key+"\"}";
+                SendData="{\"action\":\"receive\",\"method\":\"allkeymsg\",\"key\":\""+key+"\"}";
             }else{
-                SendData="{\"action\":\"receive\",\"method\":\"uidmsg\",\"uid\":\""+uid+"\"}";
+                SendData="{\"action\":\"receive\",\"method\":\"allmsg\"}";
             }
         }
         @Override
         protected JSONObject doInBackground(Void... params) {
-            return HttpUtil.postRequest(UserspaceActivity.this, SendData,null);
+            return HttpUtil.postRequest(SpaceActivity.this, SendData,null);
         }
 
         @Override
         protected void onPostExecute(JSONObject result) {
-            userspaceTask = null;
-            DisplayUtil.showProgress(UserspaceActivity.this,spaceProgressView,spaceView,false);
+            spaceTask = null;
+            DisplayUtil.showProgress(SpaceActivity.this,spaceProgressView,spaceView,false);
             if(result !=null) {
                 try {
                     Log.v("JSON", result.toString());
                     if (result.getIntValue("return") == 1) {
-                        Toast.makeText(UserspaceActivity.this,"收取消息成功！", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(SpaceActivity.this,"收取消息成功！", Toast.LENGTH_SHORT).show();
                         String returnmsg=result.getString("returnmsg");
                         JSONArray msgs= JSON.parseArray(returnmsg);
                         for(Object msg:msgs){
                             JSONObject m=(JSONObject)msg;
                             String uid=m.getString("uid");
+                            String name=m.getString("name");
+                            String avatar=m.getString("avatar");
                             String mid=m.getString("mid");
                             String message=m.getString("message");
                             String key=m.getString("key");
@@ -104,12 +125,14 @@ public class UserspaceActivity extends AppCompatActivity {
                             if(alterTimeStr!=null&&!alterTimeStr.equals(""))
                                 alterTime=DisplayUtil.dateFormat.parse(alterTimeStr);
                             messages.add(new Message(uid,mid,message,key,sendTime,alterTime));
+                            names.add(name);
+                            avatars.add(avatar);
                             JSONArray photosStr=JSON.parseArray(m.getString("photos"));
                             List<Photo> photos = new ArrayList<>();
                             for(Object photoStr:photosStr){
                                 JSONObject p=(JSONObject)photoStr;
                                 String pid=p.getString("pid");
-                                String url= APIAddress.WEB_IMG_URL+p.getString("url");
+                                String url= p.getString("url");
                                 Date uploadTime=null;
                                 String uploadTimeStr=p.getString("uploadTime");
                                 Log.i("UserspaceTask",uploadTimeStr);
@@ -119,21 +142,21 @@ public class UserspaceActivity extends AppCompatActivity {
                             }
                             photoslist.add(photos);
                         }
-                        ListView userspace_message=findViewById(R.id.userspace_message);
-                        if(userspace_message==null)
+                        ListView space_message=findViewById(R.id.space_message);
+                        if(space_message==null)
                             Log.i(TAG, "onCreate: lv empty");
-                        MyListAdapter adp=new MyListAdapter(messages,photoslist,UserspaceActivity.this);
+                        SpaceListAdapter adp=new SpaceListAdapter(messages,photoslist,names,avatars,SpaceActivity.this);
                         if(adp.isEmpty())
                             Log.i(TAG, "onCreate: adp empty");
-                        userspace_message.setAdapter(adp);
+                        space_message.setAdapter(adp);
                     } else {
                         String returnmsg=result.getString("returnmsg");
-                        DisplayUtil.dialogProcess(UserspaceActivity.this,returnmsg,true,"收取消息失败！","确定",null);
+                        DisplayUtil.dialogProcess(SpaceActivity.this,returnmsg,true,"收取消息失败！","确定",null);
                         //Toast.makeText(RegActivity.this, result.getString("returnmsg"), Toast.LENGTH_SHORT).show();
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
-                    Toast.makeText(UserspaceActivity.this,"收取JSON消息失败！", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(SpaceActivity.this,"收取JSON消息失败！", Toast.LENGTH_SHORT).show();
                 }
             }else{
                 Snackbar.make(spaceView, R.string.service_error, Snackbar.LENGTH_LONG).setAction("Action", null).show();
@@ -141,8 +164,8 @@ public class UserspaceActivity extends AppCompatActivity {
         }
         @Override
         protected void onCancelled() {
-            userspaceTask = null;
-            DisplayUtil.showProgress(UserspaceActivity.this,spaceProgressView,spaceView,false);
+            spaceTask = null;
+            DisplayUtil.showProgress(SpaceActivity.this,spaceProgressView,spaceView,false);
         }
     }
 }

@@ -265,6 +265,10 @@ public class MainActivity extends AppCompatActivity {
         mode=MODE.LIST;
         sendBroadcast(new Intent("ListRefresh"));
     }
+    public void get(View view){
+        Log.i("get","哈哈哈");
+        startActivity(new Intent(this, SpaceActivity.class));
+    }
     /**
      * 根据Uri获取图片绝对路径，解决Android4.4以上版本Uri转换
      * @param

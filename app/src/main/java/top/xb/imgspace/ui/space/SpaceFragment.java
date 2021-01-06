@@ -22,6 +22,7 @@ import androidx.lifecycle.ViewModelProvider;
 import top.xb.imgspace.LoginActivity;
 import top.xb.imgspace.MainActivity;
 import top.xb.imgspace.R;
+import top.xb.imgspace.UserspaceActivity;
 import top.xb.imgspace.application.ImgSpaceApplication;
 
 
@@ -44,9 +45,10 @@ public class SpaceFragment extends Fragment {
         if(!ImgSpaceApplication.isLoggedIn()){
             mainActivity.startActivity(new Intent(mainActivity,LoginActivity.class));
             //mainActivity.sendBroadcast(new Intent("notlogin"));
-            //mainActivity.finish();
+            mainActivity.finish();
         }
         ((MainActivity)getActivity()).setNavText(getString(R.string.title_space));
+
         spaceViewModel = new ViewModelProvider(this).get(SpaceViewModel.class);
         View root = inflater.inflate(R.layout.fragment_space, container, false);
         //final TextView textView = root.findViewById(R.id.nav_text);
@@ -58,4 +60,5 @@ public class SpaceFragment extends Fragment {
         });
         return root;
     }
+
 }

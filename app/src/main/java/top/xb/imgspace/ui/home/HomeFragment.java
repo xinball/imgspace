@@ -80,7 +80,7 @@ public class HomeFragment extends Fragment {
         intentFilter=new IntentFilter();
         intentFilter.addAction("PicRefresh");
         intentFilter.addAction("ListRefresh");
-        intentFilter.addAction("Refresh");
+        intentFilter.addAction("HomeRefresh");
         mainActivity.registerReceiver(HomeReceiver,intentFilter);
     }
 
@@ -101,7 +101,7 @@ public class HomeFragment extends Fragment {
                 listTask= new ListTask(root,listEdge);
                 DisplayUtil.showProgress(mainActivity,homeProgress,main_head,true);
                 listTask.execute();
-            }else if(action.equals("Refresh")){
+            }else if(action.equals("HomeRefresh")){
                 if(MainActivity.mode== MainActivity.MODE.LIST){
                     mainActivity.list();
                     list();
@@ -349,6 +349,7 @@ public class HomeFragment extends Fragment {
                         path.add((String) d.get("name"));
                     }
                     Intent intent=new Intent(root.getContext(),RealPicture.class);
+                    intent.putExtra("local",true);
                     intent.putExtra("position",position);
                     intent.putStringArrayListExtra("files",path);
                     intent.putExtra("path",rootPath.getPath()+"/");
@@ -431,6 +432,7 @@ public class HomeFragment extends Fragment {
                         path.add((String) d.get("name"));
                     }
                     Intent intent=new Intent(root.getContext(),RealPicture.class);
+                    intent.putExtra("local",true);
                     intent.putExtra("position",position);
                     intent.putStringArrayListExtra("files",path);
                     intent.putExtra("path",rootPath.getPath()+"/");

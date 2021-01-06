@@ -16,9 +16,10 @@ public class APIAddress
 	public static boolean LoginActivity=false;
 	public static boolean ReguserActivity=false;
     //Real
-    public static final String DOMAIN_NAME = "http://nzq.xinball.top:8080"+ WEBSITE_PATH; // Main domain name
-    public static final String BASIC_API_URL = "http://nzq.xinball.top:8080" + WEBSITE_PATH; // Domain name of API
+    public static final String DOMAIN_NAME = "https://nzq.xinball.top"+ WEBSITE_PATH; // Main domain name
+    public static final String BASIC_API_URL = "https://nzq.xinball.top" + WEBSITE_PATH; // Domain name of API
 	public static final String SEND_URL = DOMAIN_NAME+"/index"; //
+	public static final String WEB_IMG_URL = DOMAIN_NAME+"/files/img/"; //
 
 	//中等头像地址
 	public static String MIDDLE_AVATAR_URL(String userID, String avatarSize){

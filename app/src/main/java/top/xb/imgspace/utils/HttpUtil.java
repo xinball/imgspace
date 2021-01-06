@@ -35,6 +35,8 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import javax.net.ssl.HttpsURLConnection;
+
 public class HttpUtil {
     private Integer connectTimeout = null;
     private Integer socketTimeout = null;
@@ -52,7 +54,7 @@ public class HttpUtil {
             //String parameterString = buildParameterString(parameterMap, loginRequired);
             Log.d("Post parameter", SendData);
 
-            HttpURLConnection con = (HttpURLConnection)  url.openConnection();
+            HttpsURLConnection con = (HttpsURLConnection)  url.openConnection();
             /* 允许Input、Output，不使用Cache */
             con.setDoInput(true);
             con.setDoOutput(true);

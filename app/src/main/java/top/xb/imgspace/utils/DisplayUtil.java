@@ -36,12 +36,13 @@ public class DisplayUtil {
     private static int hide=View.INVISIBLE;
     private static int dispaly=View.VISIBLE;
 
-    public static SimpleDateFormat dayFormat=new SimpleDateFormat("MM/dd", Locale.getDefault());
-    public static SimpleDateFormat yearFormat=new SimpleDateFormat("yyyy", Locale.getDefault());
-    public static SimpleDateFormat timeFormat=new SimpleDateFormat("hh:mm:ss", Locale.getDefault());
-    public static SimpleDateFormat AllFormat=new SimpleDateFormat("yyyy/MM/dd hh:mm:ss", Locale.getDefault());
-    public static SimpleDateFormat dateFormatForFile=new SimpleDateFormat("yyyyMMddhhmmss", Locale.getDefault());
-    public static SimpleDateFormat dateFormat=new SimpleDateFormat("yyyy-MM-dd hh:mm:ss", Locale.getDefault());
+    public static SimpleDateFormat dayFormat=new SimpleDateFormat("MM/dd",Locale.getDefault());
+    public static SimpleDateFormat yearFormat=new SimpleDateFormat("yyyy");
+    public static SimpleDateFormat timeFormat=new SimpleDateFormat("HH:mm:ss");
+    public static SimpleDateFormat AllFormat=new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+    public static SimpleDateFormat dateFormatForFile=new SimpleDateFormat("yyyyMMddHHmmss");
+    @SuppressLint("SimpleDateFormat")
+    public static SimpleDateFormat dateFormat=new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
     @SuppressLint("ObsoleteSdkInt")
     @TargetApi(Build.VERSION_CODES.HONEYCOMB_MR2)
