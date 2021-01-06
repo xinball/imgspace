@@ -22,7 +22,7 @@ public class StartActivity extends AppCompatActivity {
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);//隐藏状态栏
         start=ImgSpaceApplication.isFirstStart();
         if(!start){
-            startActivity(new Intent(getApplicationContext(),MainActivity.class));
+            startActivity(new Intent(StartActivity.this,MainActivity.class));
             finish();
         }
         SharedPreferences.Editor editor = ImgSpaceApplication.userInfo.edit();
@@ -37,7 +37,7 @@ public class StartActivity extends AppCompatActivity {
                     sleep(5000);
                     if(start){
                         start=false;
-                        Intent it=new Intent(getApplicationContext(),MainActivity.class);//启动MainActivity
+                        Intent it=new Intent(StartActivity.this,MainActivity.class);//启动MainActivity
                         startActivity(it);
                         APIAddress.StartActivity=false;
                         finish();//关闭活动
@@ -56,7 +56,7 @@ public class StartActivity extends AppCompatActivity {
                         public void onClick(View view) {
                             if(start){
                                 start=false;
-                                Intent it=new Intent(getApplicationContext(),MainActivity.class);//启动MainActivity
+                                Intent it=new Intent(StartActivity.this,MainActivity.class);//启动MainActivity
                                 startActivity(it);
                                 APIAddress.StartActivity=false;
                                 finish();//关闭活动

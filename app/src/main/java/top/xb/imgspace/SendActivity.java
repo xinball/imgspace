@@ -80,7 +80,7 @@ public class SendActivity extends AppCompatActivity {
     private final BroadcastReceiver  SendOKReceiver = new BroadcastReceiver(){
         @Override
         public void onReceive(Context context, Intent intent) {
-            Toast.makeText(getApplicationContext(),"send ok!", Toast.LENGTH_SHORT).show();
+            Toast.makeText(SendActivity.this,"send ok!", Toast.LENGTH_SHORT).show();
         }
     };
     @Override
@@ -212,11 +212,11 @@ public class SendActivity extends AppCompatActivity {
                         String uid=ImgSpaceApplication.getUid();
                         String pwd=ImgSpaceApplication.getPwd();
                         uploadMsgTask=new UploadMsgTask(uid, pwd, myEdit, filesStr);
-                        DisplayUtil.showProgress(getApplicationContext(),sendProgressView,sendView,true);
+                        DisplayUtil.showProgress(SendActivity.this,sendProgressView,sendView,true);
                         uploadMsgTask.execute();
                     }else{
                         Toast.makeText(SendActivity.this, "未登录！", Toast.LENGTH_SHORT).show();
-                        startActivity(new Intent(getApplicationContext(),LoginActivity.class));
+                        startActivity(new Intent(SendActivity.this,LoginActivity.class));
                         finish();
                     }
                 }
@@ -340,13 +340,13 @@ public class SendActivity extends AppCompatActivity {
         }
         @Override
         protected JSONObject doInBackground(Void... params) {
-            return HttpUtil.postRequest(getApplicationContext(), SendData,files);
+            return HttpUtil.postRequest(SendActivity.this, SendData,files);
         }
 
         @Override
         protected void onPostExecute(JSONObject result) {
             uploadMsgTask = null;
-            DisplayUtil.showProgress(getApplicationContext(),sendProgressView,sendView,false);
+            DisplayUtil.showProgress(SendActivity.this,sendProgressView,sendView,false);
             if(result !=null) {
                 try {
                     Log.v("JSON", result.toString());
@@ -378,7 +378,7 @@ public class SendActivity extends AppCompatActivity {
         @Override
         protected void onCancelled() {
             uploadMsgTask = null;
-            DisplayUtil.showProgress(getApplicationContext(),sendProgressView,sendView,false);
+            DisplayUtil.showProgress(SendActivity.this,sendProgressView,sendView,false);
         }
     }
 }

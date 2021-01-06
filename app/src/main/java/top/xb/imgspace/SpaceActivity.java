@@ -244,13 +244,13 @@ public class SpaceActivity extends AppCompatActivity {
         }
         @Override
         protected JSONObject doInBackground(Void... params) {
-            return HttpUtil.postRequest(getApplicationContext(), SendData,null);
+            return HttpUtil.postRequest(SpaceActivity.this, SendData,null);
         }
 
         @Override
         protected void onPostExecute(JSONObject result) {
             userTask = null;
-            DisplayUtil.showProgress(getApplicationContext(),userProgressView,userView,false);
+            DisplayUtil.showProgress(SpaceActivity.this,userProgressView,userView,false);
             if(result !=null) {
                 try {
                     Log.v("JSON", result.toString());
@@ -264,12 +264,12 @@ public class SpaceActivity extends AppCompatActivity {
                         File avatarcache=new File(Environment.getExternalStorageDirectory()+APIAddress.WebcachePath+avatarFile);
                         Log.i(TAG,"avatarcache"+avatarcache);
                         if(avatarcache.exists())
-                            Glide.with(getApplicationContext()).load(avatarcache.getPath()).override(40,40).into(space_headPhoto);
+                            Glide.with(SpaceActivity.this).load(avatarcache.getPath()).override(40,40).into(space_headPhoto);
                         else
-                            Glide.with(getApplicationContext()).load(avatarPath).override(40,40).into(space_headPhoto);
+                            Glide.with(SpaceActivity.this).load(avatarPath).override(40,40).into(space_headPhoto);
                         space_name.setText(priuser.name);
                     } else {
-                        Toast.makeText(getApplicationContext(), result.getString("returnmsg"), Toast.LENGTH_SHORT).show();
+                        Toast.makeText(SpaceActivity.this, result.getString("returnmsg"), Toast.LENGTH_SHORT).show();
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -282,7 +282,7 @@ public class SpaceActivity extends AppCompatActivity {
         @Override
         protected void onCancelled() {
             userTask = null;
-            DisplayUtil.showProgress(getApplicationContext(),userProgressView,userView,false);
+            DisplayUtil.showProgress(SpaceActivity.this,userProgressView,userView,false);
         }
     }
 }

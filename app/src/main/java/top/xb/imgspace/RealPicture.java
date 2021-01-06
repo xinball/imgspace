@@ -80,7 +80,7 @@ public class RealPicture extends AppCompatActivity {
         }
         deleteProgress=findViewById(R.id.deleteProgress);
         real_bottomtitle=findViewById(R.id.real_bottomtitle);
-        myPagerAdapter=new MyPagerAdapter(getApplicationContext(),local,mImage,path,photos,real_bottomtitle);
+        myPagerAdapter=new MyPagerAdapter(RealPicture.this,local,mImage,path,photos,real_bottomtitle);
         mPictureviewpager.setAdapter(myPagerAdapter);
         //找到上一个活动点击时的位置，可以从该位置查看图片
         int index=intent.getIntExtra("position",0);
@@ -107,10 +107,10 @@ public class RealPicture extends AppCompatActivity {
     public void menu(View view){
         if(local){
             String path=(String) myPagerAdapter.getPrimaryItem();
-            DisplayUtil.adialogProcess(getApplicationContext(),"图片位置为："+ path,true,"图片信息","好！",null);
+            DisplayUtil.dialogProcess(this,"图片位置为："+ path,true,"图片信息","好！",null);
         }else{
             Photo photo=(Photo) myPagerAdapter.getPrimaryItem();
-            DisplayUtil.adialogProcess(getApplicationContext(),"网络路径为："+ APIAddress.WEB_IMG_URL+photo.url+
+            DisplayUtil.dialogProcess(this,"网络路径为："+ APIAddress.WEB_IMG_URL+photo.url+
                     "\n本地保存位置为："+ Environment.getExternalStorageDirectory()+APIAddress.WebcachePath+photo.uid+"\n上传时间为："+DisplayUtil.dateFormat.format(photo.uploadTime),
                     true,"图片信息","好！",null);
         }

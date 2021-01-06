@@ -272,13 +272,13 @@ public class UserActivity extends AppCompatActivity {
         }
         @Override
         protected JSONObject doInBackground(Void... params) {
-            return HttpUtil.postRequest(getApplicationContext(), SendData,null);
+            return HttpUtil.postRequest(UserActivity.this, SendData,null);
         }
 
         @Override
         protected void onPostExecute(JSONObject result) {
             userTask = null;
-            DisplayUtil.showProgress(getApplicationContext(),userProgressView,userView,false);
+            DisplayUtil.showProgress(UserActivity.this,userProgressView,userView,false);
             if(result !=null) {
                 try {
                     Log.v("JSON", result.toString());
@@ -292,9 +292,9 @@ public class UserActivity extends AppCompatActivity {
                         File avatarcache=new File(Environment.getExternalStorageDirectory()+APIAddress.WebcachePath+avatarFile);
                         Log.i(TAG,"avatarcache"+avatarcache);
                         if(avatarcache.exists())
-                            Glide.with(getApplicationContext()).load(avatarcache.getPath()).override(40,40).into(change_ig);
+                            Glide.with(UserActivity.this).load(avatarcache.getPath()).override(40,40).into(change_ig);
                         else
-                            Glide.with(getApplicationContext()).load(avatarPath).override(40,40).into(change_ig);
+                            Glide.with(UserActivity.this).load(avatarPath).override(40,40).into(change_ig);
                         tv_user_show_name.setText(priuser.name);
 
                         tv_accout.setText(priuser.slogan);
@@ -308,7 +308,7 @@ public class UserActivity extends AppCompatActivity {
                         //tv_monthname.setText(priuser.birthday);
                         //tv_dayname.setText(priuser.birthday);
                     } else {
-                        Toast.makeText(getApplicationContext(), result.getString("returnmsg"), Toast.LENGTH_SHORT).show();
+                        Toast.makeText(UserActivity.this, result.getString("returnmsg"), Toast.LENGTH_SHORT).show();
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -321,7 +321,7 @@ public class UserActivity extends AppCompatActivity {
         @Override
         protected void onCancelled() {
             userTask = null;
-            DisplayUtil.showProgress(getApplicationContext(),userProgressView,userView,false);
+            DisplayUtil.showProgress(UserActivity.this,userProgressView,userView,false);
         }
     }
 }

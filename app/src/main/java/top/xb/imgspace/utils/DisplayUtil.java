@@ -115,27 +115,6 @@ public class DisplayUtil {
         builder.create().show();
     }
     //快捷删除提示框
-    public static void adialogProcess(Context context,String message,boolean Cancelable,String title, String posiBtn, String negaBtn) {
-        android.app.AlertDialog.Builder builder = new android.app.AlertDialog.Builder(context);
-        builder.setMessage(message);
-        builder.setTitle(title);
-        builder.setCancelable(Cancelable);
-        builder.setIcon(context.getResources().getDrawable(R.drawable.progressbar));
-        if(posiBtn!=null)
-        builder.setPositiveButton(posiBtn, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialogInterface, int which) {
-            }
-        });
-        if(negaBtn!=null)
-        builder.setNegativeButton(negaBtn, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialogInterface, int which) {
-            }
-        });
-        builder.create().show();
-    }
-    //快捷删除提示框
     public static AlertDialog.Builder dialogExcute(Context context, String message, boolean Cancelable, String title) {
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
         builder.setMessage(message);
