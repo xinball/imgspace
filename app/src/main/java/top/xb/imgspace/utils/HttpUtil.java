@@ -7,7 +7,6 @@ import android.content.SharedPreferences;
 import android.util.Log;
 
 import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 
 import top.xb.imgspace.LoginActivity;
@@ -29,6 +28,9 @@ import java.net.Proxy;
 import java.net.URL;
 import java.net.URLConnection;
 import java.net.URLEncoder;
+import java.security.KeyStore;
+import java.security.cert.Certificate;
+import java.security.cert.CertificateFactory;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -36,6 +38,8 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import javax.net.ssl.HttpsURLConnection;
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.TrustManagerFactory;
 
 public class HttpUtil {
     private Integer connectTimeout = null;
@@ -44,8 +48,28 @@ public class HttpUtil {
     private Integer proxyPort = null;
     private static String charset = "UTF-8";
     private static final String boundary = "*****";
+    public static SSLContext getSSLContext(Context inputContext) {
+        SSLContext context = null;
+        try {
+            CertificateFactory cf = CertificateFactory.getInstance("X.509");
+            InputStream in = inputContext.getAssets().open("root.crt");
+            Certificate ca = cf.generateCertificate(in);
+            KeyStore keystore = KeyStore.getInstance(KeyStore.getDefaultType());
+            keystore.load(null, null);
+            keystore.setCertificateEntry("ca", ca);
+            String tmfAlgorithm = TrustManagerFactory.getDefaultAlgorithm();
+            TrustManagerFactory tmf = TrustManagerFactory.getInstance(tmfAlgorithm);
+            tmf.init(keystore);
+            // Create an SSLContext that uses our TrustManager
+            context = SSLContext.getInstance("TLS");
+            context.init(null, tmf.getTrustManagers(), null);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return context;
+    }
 
-    // Post方法访问服务器，返回json对象
+        // Post方法访问服务器，返回json对象
     public static JSONObject postRequest(Context context, String SendData, List<String> files) {
         try {
             String urlStr=APIAddress.SEND_URL;
@@ -53,9 +77,10 @@ public class HttpUtil {
             URL url = new URL(urlStr);
             //String parameterString = buildParameterString(parameterMap, loginRequired);
             Log.d("Post parameter", SendData);
-
+            HTTPSTrustManager.allowAllSSL();//信任所有证书
             HttpsURLConnection con = (HttpsURLConnection)  url.openConnection();
             /* 允许Input、Output，不使用Cache */
+            con.setSSLSocketFactory(getSSLContext(context).getSocketFactory());
             con.setDoInput(true);
             con.setDoOutput(true);
             con.setUseCaches(false);
