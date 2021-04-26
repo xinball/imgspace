@@ -2,7 +2,7 @@
 
 信球网支持本项目：
 
-[信球网](http://xinball.top) <img src="http://xinball.top/img/banner.png" width="100px">
+[信球网](http://xinball.top)  <img src="http://xinball.top/img/banner.png" width="100px">
 
 <hr/>
 
